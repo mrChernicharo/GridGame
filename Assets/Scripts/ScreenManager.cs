@@ -10,10 +10,6 @@ public class ScreenManager : MonoBehaviour
     static ScreenManager instance;
     string currentScene;
 
-    // [SerializeField] private Button backButton;
-    // [SerializeField] private Button startButton;
-    // [SerializeField] private Button goToLevelButton;
-
     void Awake()
     {
         if (instance != null && instance != this)
@@ -49,22 +45,22 @@ public class ScreenManager : MonoBehaviour
             case "MainScreen":
                 GameObject startButtonGO = GameObject.FindGameObjectWithTag("Button.Start");
                 Button startButton = startButtonGO.GetComponent<Button>();
+
                 startButton.onClick.AddListener(OnStartButtonClick);
                 break;
             case "LevelSelectionScreen":
                 GameObject backButtonGO = GameObject.FindGameObjectWithTag("Button.Back");
                 GameObject levelButtonGO = GameObject.FindGameObjectWithTag("Button.Level");
-
                 Button backButton = backButtonGO.GetComponent<Button>();
                 Button levelButton = levelButtonGO.GetComponent<Button>();
 
                 backButton.onClick.AddListener(OnBackButtonClick);
                 levelButton.onClick.AddListener(OnSLevelButtonClick);
-
                 break;
             case "LevelScreen":
                 GameObject backButtonGO2 = GameObject.FindGameObjectWithTag("Button.Back");
                 Button backButton2 = backButtonGO2.GetComponent<Button>();
+
                 backButton2.onClick.AddListener(OnBackButtonClick);
                 break;
         }
@@ -80,7 +76,6 @@ public class ScreenManager : MonoBehaviour
         {
             instance.LoadScreen("LevelSelectionScreen");
         }
-
         if (SceneManager.GetActiveScene().name == "LevelSelectionScreen")
         {
             instance.LoadScreen("MainScreen");

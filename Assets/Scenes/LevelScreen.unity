@@ -215,6 +215,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &669798673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 669798674}
+  - component: {fileID: 669798675}
+  m_Layer: 0
+  m_Name: GameStage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &669798674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669798673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &669798675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669798673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d160e971f7cfe45169204d92e777e64e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CELL_GAP: 0.75
+  LEFT_MARGIN: -1.5
+  TOP_MARGIN: -3.5
+  rows: 8
+  columns: 5
+  slotPrefab: {fileID: 8728490242987617497, guid: 54ddf12a5ea634bc8bedd41cd0f5d5ac, type: 3}
+  gemPrefabs:
+  - {fileID: 721770908725526478, guid: e4231101f1e374f92b9a0230c0272853, type: 3}
+  - {fileID: 721770908725526478, guid: d9f490ab59b7642ca96797af13c36c8a, type: 3}
+  - {fileID: 721770908725526478, guid: 8aa38fcbfd7e441758025ce8984b4e39, type: 3}
+  - {fileID: 6512901721596574129, guid: 9e376f83d40854cb588f3ee367e4cf9a, type: 3}
+  - {fileID: 6024394747531204605, guid: 58c7cb885febb40d5a33d2511fdebc6f, type: 3}
+  - {fileID: 8777673996664547681, guid: d4d628a89f49140bd9834cd650be6547, type: 3}
 --- !u!1 &914693757
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,3 +658,4 @@ SceneRoots:
   - {fileID: 404703272}
   - {fileID: 914693761}
   - {fileID: 1544965519}
+  - {fileID: 669798674}
