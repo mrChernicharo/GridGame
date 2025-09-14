@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
@@ -13,14 +16,22 @@ public class Board : MonoBehaviour
     [SerializeField] private float TOP_MARGIN; // -1.885
     [SerializeField] private int rows;
     [SerializeField] private int columns;
+
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject[] gemPrefabs;
 
-    float spawnTimer = 0f;
-    float SPAWN_INTERVAL = 0.5f;
+
+    // initialization *********************************************
     private int _col = 0;
     private int _row = 0;
 
+    // drag ********************************************************
+    Rigidbody currentRigidbody = null;
+    bool isDragging = false;
+    Vector3 offset = Vector3.zero;
+    float dragTriggerDistance = 0.4f;
+
+    // collections **************************************************
     private List<List<GameObject>> board = new List<List<GameObject>>();
     private List<GameObject> spawnPoints = new List<GameObject>();
     private List<GameObject> gems = new List<GameObject>();
@@ -36,6 +47,7 @@ public class Board : MonoBehaviour
 
     void Update()
     {
+        HandleGemTouch();
     }
 
     void CreateBoard()
@@ -67,17 +79,16 @@ public class Board : MonoBehaviour
 
     void SpawnGem(int row, int col)
     {
-
-        int idx = Random.Range(0, gemPrefabs.Length);
+        int idx = UnityEngine.Random.Range(0, gemPrefabs.Length);
         GameObject gemPrefab = gemPrefabs[idx];
         GameObject spawnPoint = spawnPoints[col];
 
         GameObject targetSlot = board[row][col];
-
         Debug.Log($"targetSlot {targetSlot.transform.position}");
 
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
+        gem.name = $"{gem.name.Replace("(Clone)", "")}-{col}-{row}";
         gem.SetTargetY(targetSlot.transform.position.y);
 
         gems.Add(gemGO);
@@ -106,4 +117,113 @@ public class Board : MonoBehaviour
         }
         Debug.Log("Gem initialization finished!");
     }
+
+    void HandleGemTouch()
+    {
+        if (Input.touchCount <= 0) return;
+
+        Touch touch = Input.GetTouch(0);
+
+        switch (touch.phase)
+        {
+            case TouchPhase.Began:
+                Ray ray = Camera.main.ScreenPointToRay(touch.position);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        currentRigidbody = rb;
+                        isDragging = true;
+
+                        Gem clickedGem = rb.GetComponent<Gem>();
+                        Debug.Log($"Gem {clickedGem.name}");
+
+                        Vector3 touchStartPos = Camera.main.ScreenToWorldPoint(touch.position);
+                        touchStartPos.z = 0;
+
+                        offset = currentRigidbody.position - touchStartPos;
+                        // Debug.Log($"Touch position: {convertedTouchPos} currentRigidbody position: {currentRigidbody.position} Offset: {offset}");
+                    }
+                }
+                break;
+
+            case TouchPhase.Moved:
+                if (!isDragging || currentRigidbody == null) return;
+
+                Vector3 startPos = currentRigidbody.position + offset;
+                Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
+                touchPos.z = 0;
+
+                float distance = Vector3.Distance(startPos, touchPos);
+
+                if (distance <= dragTriggerDistance) return;
+
+                float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
+                float angleDeg = angleRad * (180 / Mathf.PI);
+                // Debug.Log($"Dragging! {angleDeg}");
+
+                Gem gem = currentRigidbody.GetComponent<Gem>();
+
+                string matches = Regex.Match(gem.name, @"(\d+)-(\d+)").ToString();
+                string[] coords = matches.Split('-');
+
+                int gemCol = int.Parse(coords[0]);
+                int gemRow = int.Parse(coords[1]);
+                int gemIdx = gemRow * columns + gemCol;
+                Debug.Log($"matches! {matches} - x: {gemCol} y: {gemRow} gemIdx: {gemIdx}");
+
+
+                // DOWN
+                if (angleDeg >= -135 && angleDeg < -45)
+                {
+                    if (gemRow > 0)
+                    {
+                        GameObject other = gems[gemIdx - columns];
+                        Debug.Log($"DOWN this: {gem}, other: {other}");
+                    }
+                    else Debug.Log($"DOWN this: {gem}, other: NULL");
+                }
+                // RIGHT
+                else if (angleDeg >= -45 && angleDeg < 45)
+                {
+                    if (gemCol < columns - 1)
+                    {
+                        GameObject other = gems[gemIdx + 1];
+                        Debug.Log($"RIGHT this: {gem}, other: {other}");
+                    }
+                    else Debug.Log($"RIGHT this: {gem}, other: NULL");
+                }
+                // UP
+                else if (angleDeg >= 45 && angleDeg < 135)
+                {
+                    if (gemRow < rows - 1)
+                    {
+                        GameObject other = gems[gemIdx + columns];
+                        Debug.Log($"UP this: {gem}, other: {other}");
+                    }
+                    else Debug.Log($"UP this: {gem}, other: NULL");
+                }
+                // LEFT
+                else if (angleDeg >= 135 || angleDeg < -135)
+                {
+                    if (gemCol > 0)
+                    {
+                        GameObject other = gems[gemIdx - 1];
+                        Debug.Log($"LEFT this: {gem}, other: {other}");
+                    }
+                    else Debug.Log($"LEFT this: {gem}, other: NULL");
+                }
+                break;
+
+            case TouchPhase.Ended:
+                isDragging = false;
+                currentRigidbody = null;
+                offset = Vector3.zero;
+                break;
+        }
+    }
+
 }
