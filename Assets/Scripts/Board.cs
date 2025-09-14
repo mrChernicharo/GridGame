@@ -8,6 +8,10 @@ using UnityEditor.SearchService;
 using UnityEngine;
 
 
+enum Direction
+{
+    Up, Down, Left, Right
+}
 
 public class Board : MonoBehaviour
 {
@@ -173,7 +177,7 @@ public class Board : MonoBehaviour
                 int gemCol = int.Parse(coords[0]);
                 int gemRow = int.Parse(coords[1]);
                 int gemIdx = gemRow * columns + gemCol;
-                Debug.Log($"matches! {matches} - x: {gemCol} y: {gemRow} gemIdx: {gemIdx}");
+                // Debug.Log($"matches! {matches} - x: {gemCol} y: {gemRow} gemIdx: {gemIdx}");
 
 
                 // DOWN
@@ -182,9 +186,8 @@ public class Board : MonoBehaviour
                     if (gemRow > 0)
                     {
                         GameObject other = gems[gemIdx - columns];
-                        Debug.Log($"DOWN this: {gem}, other: {other}");
+                        GemSwap(gems[gemIdx], other, Direction.Down);
                     }
-                    else Debug.Log($"DOWN this: {gem}, other: NULL");
                 }
                 // RIGHT
                 else if (angleDeg >= -45 && angleDeg < 45)
@@ -192,9 +195,8 @@ public class Board : MonoBehaviour
                     if (gemCol < columns - 1)
                     {
                         GameObject other = gems[gemIdx + 1];
-                        Debug.Log($"RIGHT this: {gem}, other: {other}");
+                        GemSwap(gems[gemIdx], other, Direction.Right);
                     }
-                    else Debug.Log($"RIGHT this: {gem}, other: NULL");
                 }
                 // UP
                 else if (angleDeg >= 45 && angleDeg < 135)
@@ -202,9 +204,8 @@ public class Board : MonoBehaviour
                     if (gemRow < rows - 1)
                     {
                         GameObject other = gems[gemIdx + columns];
-                        Debug.Log($"UP this: {gem}, other: {other}");
+                        GemSwap(gems[gemIdx], other, Direction.Up);
                     }
-                    else Debug.Log($"UP this: {gem}, other: NULL");
                 }
                 // LEFT
                 else if (angleDeg >= 135 || angleDeg < -135)
@@ -212,9 +213,8 @@ public class Board : MonoBehaviour
                     if (gemCol > 0)
                     {
                         GameObject other = gems[gemIdx - 1];
-                        Debug.Log($"LEFT this: {gem}, other: {other}");
+                        GemSwap(gems[gemIdx], other, Direction.Left);
                     }
-                    else Debug.Log($"LEFT this: {gem}, other: NULL");
                 }
                 break;
 
@@ -226,4 +226,9 @@ public class Board : MonoBehaviour
         }
     }
 
+
+    void GemSwap(GameObject gem, GameObject other, Direction direction)
+    {
+        Debug.Log($"Gem: {gem.name} Other: {other.name} Direction: {direction}");
+    }
 }
