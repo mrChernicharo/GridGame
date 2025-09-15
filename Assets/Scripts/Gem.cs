@@ -8,6 +8,9 @@ public class Gem : MonoBehaviour
     private float initialY;
     private float speed = 0f;
 
+    public int row;
+    public int col;
+
 
     // *************
     private bool isMoving = false;

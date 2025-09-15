@@ -92,9 +92,10 @@ public class Board : MonoBehaviour
 
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
-        gem.name = $"{gem.name.Replace("(Clone)", "")}-{col}-{row}";
+        gem.name = $"{gem.name.Replace("(Clone)", "")}";
+        gem.row = row;
+        gem.col = col;
         gem.SetInitialY(targetSlot.transform.position.y);
-
         gems.Add(gemGO);
     }
 
@@ -161,25 +162,13 @@ public class Board : MonoBehaviour
                 Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
                 touchPos.z = 0;
 
-                float distance = Vector3.Distance(startPos, touchPos);
-
-                if (distance <= dragTriggerDistance) return;
-
+                if (Vector3.Distance(startPos, touchPos) <= dragTriggerDistance) return;
 
                 float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
                 float angleDeg = angleRad * (180 / Mathf.PI);
-                // Debug.Log($"Dragging! {angleDeg}");
 
                 Gem gem = currentRigidbody.GetComponent<Gem>();
-
-                // TODO: fix this
-                string matches = Regex.Match(gem.name, @"(\d+)-(\d+)").ToString();
-                string[] coords = matches.Split('-');
-
-                int gemCol = int.Parse(coords[0]);
-                int gemRow = int.Parse(coords[1]);
-                int gemIdx = gemRow * columns + gemCol;
-                // Debug.Log($"matches! {matches} - x: {gemCol} y: {gemRow} gemIdx: {gemIdx}");
+                int gemIdx = gem.row * columns + gem.col;
 
                 // Reset everything
                 isDragging = false;
@@ -189,7 +178,7 @@ public class Board : MonoBehaviour
                 // DOWN
                 if (angleDeg >= -135 && angleDeg < -45)
                 {
-                    if (gemRow > 0)
+                    if (gem.row > 0)
                     {
                         GameObject other = gems[gemIdx - columns];
                         GemSwap(gems[gemIdx], other, Direction.Down);
@@ -201,7 +190,7 @@ public class Board : MonoBehaviour
                 // RIGHT
                 else if (angleDeg >= -45 && angleDeg < 45)
                 {
-                    if (gemCol < columns - 1)
+                    if (gem.col < columns - 1)
                     {
                         GameObject other = gems[gemIdx + 1];
                         GemSwap(gems[gemIdx], other, Direction.Right);
@@ -213,7 +202,7 @@ public class Board : MonoBehaviour
                 // UP
                 else if (angleDeg >= 45 && angleDeg < 135)
                 {
-                    if (gemRow < rows - 1)
+                    if (gem.row < rows - 1)
                     {
                         GameObject other = gems[gemIdx + columns];
                         GemSwap(gems[gemIdx], other, Direction.Up);
@@ -225,7 +214,7 @@ public class Board : MonoBehaviour
                 // LEFT
                 else if (angleDeg >= 135 || angleDeg < -135)
                 {
-                    if (gemCol > 0)
+                    if (gem.col > 0)
                     {
                         GameObject other = gems[gemIdx - 1];
                         GemSwap(gems[gemIdx], other, Direction.Left);
@@ -234,6 +223,21 @@ public class Board : MonoBehaviour
                         gems[gemIdx] = other;
 
                     }
+                }
+
+
+                bool hasCombo = CheckBoard();
+
+                if (hasCombo)
+                {
+                    // is 3 combo
+                    // explode found sequences
+                    // handle falling
+                    // handle new gem spawning
+                }
+                else
+                {
+                    // move gem back
                 }
 
                 break;
@@ -261,5 +265,15 @@ public class Board : MonoBehaviour
         thisGem.Move(other.transform.position);
         otherGem.Move(gem.transform.position);
 
+        (otherGem.row, thisGem.row) = (thisGem.row, otherGem.row);
+        (otherGem.col, thisGem.col) = (thisGem.col, otherGem.col);
     }
+
+    bool CheckBoard()
+    {
+        Debug.Log("CheckBoard");
+
+        return false;
+    }
+
 }
