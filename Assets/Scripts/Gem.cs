@@ -38,6 +38,17 @@ public class Gem : MonoBehaviour
         destination = _destination;
     }
 
+    public void Explode()
+    {
+        Destroy(gameObject);
+    }
+
+
+    public void Fall(int slotCount)
+    {
+
+    }
+
     void Start()
     {
 

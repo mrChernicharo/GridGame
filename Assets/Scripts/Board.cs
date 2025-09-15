@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEditor.SearchService;
 using UnityEngine;
 
@@ -11,6 +12,20 @@ using UnityEngine;
 enum Direction
 {
     Up, Down, Left, Right
+}
+
+struct BoardResult
+{
+    public List<List<Gem>> rowGems;
+    public List<List<Gem>> colGems;
+    public List<Gem> gemsToRemove;
+
+    public BoardResult(List<List<Gem>> rg, List<List<Gem>> cg, List<Gem> gtr)
+    {
+        rowGems = rg;
+        colGems = cg;
+        gemsToRemove = gtr;
+    }
 }
 
 public class Board : MonoBehaviour
@@ -190,17 +205,53 @@ public class Board : MonoBehaviour
 
                 GemSwap(thisGem, gemIdx, otherGem, otherIdx, (Direction)dir);
 
-                // gems[gemIdx] = otherGem;
-                // gems[otherIdx] = thisGem;
+                BoardResult boardResult = CheckBoard();
 
-                bool hasCombo = CheckBoard();
 
-                if (hasCombo)
+                // pluck gems to remove
+                if (boardResult.gemsToRemove.Count > 0)
                 {
-                    // is 3 combo
-                    // explode found sequences
-                    // handle falling
-                    // handle new gem spawning
+                    for (int i = 0; i < boardResult.colGems.Count; i++)
+                    {
+                        List<Gem> gemsInCol = boardResult.colGems[i];
+                        int colDestroyCount = 0;
+                        for (int j = 0; j < gemsInCol.Count; j++)
+                        {
+                            Gem currGem = gemsInCol[j];
+                            int gIdx = currGem.row * columns + currGem.col;
+                            GameObject gGO = gems[gIdx];
+
+                            if (gGO.GetComponent<Gem>() != currGem)
+                            {
+                                Debug.LogError("Houston!");
+                            }
+
+
+                            if (boardResult.gemsToRemove.Contains(currGem))
+                            {
+                                // destroy gems to remove
+                                colDestroyCount++;
+                                gems[gIdx] = null;
+                                currGem.Explode();
+                            }
+                            else
+                            {
+                                if (colDestroyCount > 0)
+                                {
+                                    // handle falling gems
+                                    gem.Fall(colDestroyCount);
+                                }
+                            }
+                        }
+
+
+                        // spawn new gems
+
+                    }
+
+                    // update gems' rows & cols
+
+                    isLocked = false;
                 }
                 else
                 {
@@ -253,25 +304,18 @@ public class Board : MonoBehaviour
 
     }
 
-    bool CheckBoard()
+    BoardResult CheckBoard()
     {
         Debug.Log("CheckBoard");
-
-
 
         List<List<Gem>> rowGems = new List<List<Gem>>();
         List<List<Gem>> colGems = new List<List<Gem>>();
 
 
         // initialize rowGems / colGems
-        for (int i = 0; i < rows; i++)
-        {
-            rowGems.Add(new List<Gem>());
-        }
-        for (int i = 0; i < columns; i++)
-        {
-            colGems.Add(new List<Gem>());
-        }
+        for (int i = 0; i < rows; i++) rowGems.Add(new List<Gem>());
+
+        for (int i = 0; i < columns; i++) colGems.Add(new List<Gem>());
 
 
         // assign gems to rowGems / colGems
@@ -296,35 +340,6 @@ public class Board : MonoBehaviour
                 tempCol++;
             }
         }
-
-        // for (int ri = 0; ri < rowGems.Count; ri++)
-        // {
-        //     for (int rj = 0; rj < rowGems[ri].Count; rj++)
-        //     {
-        //         Gem rowItem = rowGems[ri][rj];
-        //         Debug.Log($"CheckBoard ::: Rows -> {rowItem.color} :: Row {rowItem.row} Col {rowItem.col}");
-        //     }
-        // }
-        // for (int ci = 0; ci < colGems.Count; ci++)
-        // {
-        //     for (int cj = 0; cj < colGems[ci].Count; cj++)
-        //     {
-        //         Gem colItem = colGems[ci][cj];
-        //         Debug.Log($"CheckBoard ::: Cols -> {colItem.color} :: Col {colItem.col} Row {colItem.row}");
-        //     }
-        // }
-
-
-
-        // for (int i = 0; i < gems.Count; i++)
-        // {
-        //     GameObject gemGO = gems[i];
-        //     Gem gem = gemGO.GetComponent<Gem>();
-        //     Debug.Log($"CheckBoard {gem.color} :: {gem.row} {gem.col}");
-        // }
-
-
-
 
 
         List<Gem> gemsToRemove = new List<Gem>();
@@ -373,59 +388,62 @@ public class Board : MonoBehaviour
         }
 
 
-        Debug.Log($"currSequence :::::: DONE CHECKING ROWS");
-        currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
+        // Debug.Log($"currSequence :::::: DONE CHECKING ROWS ::: currSequence.Count: {currSequence.Count}");
+        // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
 
-        // for (int i = 0; i < colGems.Count; i++)
-        // {
-        //     List<Gem> currCol = colGems[i];
+        for (int i = 0; i < colGems.Count; i++)
+        {
+            List<Gem> currCol = colGems[i];
 
-        //     for (int j = 0; j < currCol.Count; j++)
-        //     {
-        //         Gem item = currCol[j];
-        //         bool isFirstItem = j == 0;
-        //         bool isLastItem = j == currCol.Count - 1;
-        //         if (isFirstItem)
-        //         {
-        //             currSequence.Add(item);
-        //         }
-        //         else
-        //         {
-        //             Gem prev = currCol[j - 1];
+            Debug.Log("-------------------------------");
+            Debug.Log($"=================== Col # {i}");
 
-        //             if (prev.color == item.color)
-        //             {
-        //                 currSequence.Add(item);
-        //                 continue;
-        //             }
+            for (int j = 0; j < currCol.Count; j++)
+            {
+                Gem item = currCol[j];
+                bool isFirstItem = j == 0;
+                bool isLastItem = j == currCol.Count - 1;
+                if (isFirstItem)
+                {
+                    currSequence.Add(item);
+                }
+                else
+                {
+                    Gem prev = currCol[j - 1];
 
-        //             if (prev.color != item.color || isLastItem)
-        //             {
-        //                 if (currSequence.Count >= 3)
-        //                 {
-        //                     foreach (Gem obj in currSequence)
-        //                     {
-        //                         gemsToRemove.Add(obj);
-        //                     }
-        //                 }
+                    if (prev.color == item.color)
+                    {
+                        currSequence.Add(item);
+                    }
 
-        //                 currSequence.Clear();
-        //                 if (!isLastItem) currSequence.Add(item);
-        //             }
-        //         }
-        //     }
-        // }
+                    if (prev.color != item.color || isLastItem)
+                    {
+                        if (currSequence.Count >= 3)
+                        {
+                            Debug.Log("COMBO! COMBO!");
+                            foreach (Gem obj in currSequence) gemsToRemove.Add(obj);
+                        }
+
+                        currSequence.Clear();
+                        if (!isLastItem) currSequence.Add(item);
+                    }
+                }
+                Debug.Log($"currSequence ::::::");
+                currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
+            }
+        }
 
         if (gemsToRemove.Count > 0) Debug.Log("=========================================");
 
-        // foreach (Gem g in gemsToRemove)
-        // {
-        //     Debug.Log($"** Gem to remove ** {g.color} {g.row} {g.col}");
-        // }
+        gemsToRemove = gemsToRemove.Distinct().ToList();
 
+        foreach (Gem g in gemsToRemove)
+        {
+            Debug.Log($"** Gem to remove ** {g.color} {g.row} {g.col}");
+        }
 
-
-        return false;
+        BoardResult result = new BoardResult(rowGems, colGems, gemsToRemove);
+        return result;
     }
 
     IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
@@ -461,3 +479,5 @@ public class Board : MonoBehaviour
         Debug.Log("Gem initialization finished!");
     }
 }
+
+
