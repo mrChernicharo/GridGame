@@ -31,6 +31,7 @@ public class Board : MonoBehaviour
 
     // drag ********************************************************
     Rigidbody currentRigidbody = null;
+    bool isLocked = false;
     bool isDragging = false;
     Vector3 offset = Vector3.zero;
     float dragTriggerDistance = 0.4f;
@@ -134,29 +135,30 @@ public class Board : MonoBehaviour
             case TouchPhase.Began:
                 Ray ray = Camera.main.ScreenPointToRay(touch.position);
                 RaycastHit hit;
+                if (!Physics.Raycast(ray, out hit)) return;
 
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                    if (rb != null)
-                    {
-                        currentRigidbody = rb;
-                        isDragging = true;
+                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                if (rb == null) return;
 
-                        Gem clickedGem = rb.GetComponent<Gem>();
-                        Debug.Log($"Gem {clickedGem.name}");
+                Gem clickedGem = rb.GetComponent<Gem>();
+                if (clickedGem.IsMoving()) return;
 
-                        Vector3 touchStartPos = Camera.main.ScreenToWorldPoint(touch.position);
-                        touchStartPos.z = 0;
+                currentRigidbody = rb;
+                isDragging = true;
 
-                        offset = currentRigidbody.position - touchStartPos;
-                        // Debug.Log($"Touch position: {convertedTouchPos} currentRigidbody position: {currentRigidbody.position} Offset: {offset}");
-                    }
-                }
+                Vector3 touchStartPos = Camera.main.ScreenToWorldPoint(touch.position);
+                touchStartPos.z = 0;
+
+                offset = currentRigidbody.position - touchStartPos;
+
+                Debug.Log($"Gem {clickedGem.name}");
+                // Debug.Log($"Touch position: {convertedTouchPos} currentRigidbody position: {currentRigidbody.position} Offset: {offset}");
                 break;
 
             case TouchPhase.Moved:
-                if (!isDragging || currentRigidbody == null) return;
+                if (!isDragging || isLocked || currentRigidbody == null) return;
+
+                Gem gem = currentRigidbody.GetComponent<Gem>();
 
                 Vector3 startPos = currentRigidbody.position + offset;
                 Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
@@ -167,63 +169,57 @@ public class Board : MonoBehaviour
                 float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
                 float angleDeg = angleRad * (180 / Mathf.PI);
 
-                Gem gem = currentRigidbody.GetComponent<Gem>();
-                int gemIdx = gem.row * columns + gem.col;
-
                 // Reset everything
                 isDragging = false;
                 currentRigidbody = null;
                 offset = Vector3.zero;
+                isLocked = true;
 
-                // DOWN
-                if (angleDeg >= -135 && angleDeg < -45)
+                Nullable<Direction> dir = null;
+                if (gem.row > 0 && angleDeg >= -135 && angleDeg < -45)
                 {
-                    if (gem.row > 0)
-                    {
-                        GameObject other = gems[gemIdx - columns];
-                        GemSwap(gems[gemIdx], other, Direction.Down);
-
-                        gems[gemIdx - columns] = gems[gemIdx];
-                        gems[gemIdx] = other;
-                    }
+                    dir = Direction.Down;
                 }
-                // RIGHT
-                else if (angleDeg >= -45 && angleDeg < 45)
+                else if (gem.col < columns - 1 && angleDeg >= -45 && angleDeg < 45)
                 {
-                    if (gem.col < columns - 1)
-                    {
-                        GameObject other = gems[gemIdx + 1];
-                        GemSwap(gems[gemIdx], other, Direction.Right);
-
-                        gems[gemIdx + 1] = gems[gemIdx];
-                        gems[gemIdx] = other;
-                    }
+                    dir = Direction.Right;
                 }
-                // UP
-                else if (angleDeg >= 45 && angleDeg < 135)
+                else if (gem.row < rows - 1 && angleDeg >= 45 && angleDeg < 135)
                 {
-                    if (gem.row < rows - 1)
-                    {
-                        GameObject other = gems[gemIdx + columns];
-                        GemSwap(gems[gemIdx], other, Direction.Up);
-
-                        gems[gemIdx + columns] = gems[gemIdx];
-                        gems[gemIdx] = other;
-                    }
+                    dir = Direction.Up;
                 }
-                // LEFT
-                else if (angleDeg >= 135 || angleDeg < -135)
+                else if (gem.col > 0 && angleDeg >= 135 || angleDeg < -135)
                 {
-                    if (gem.col > 0)
-                    {
-                        GameObject other = gems[gemIdx - 1];
-                        GemSwap(gems[gemIdx], other, Direction.Left);
-
-                        gems[gemIdx - 1] = gems[gemIdx];
-                        gems[gemIdx] = other;
-
-                    }
+                    dir = Direction.Left;
                 }
+
+                if (dir == null) return;
+
+                int gemIdx = gem.row * columns + gem.col;
+                int otherIdx = -1;
+                switch (dir)
+                {
+                    case Direction.Up:
+                        otherIdx = gemIdx + columns;
+                        break;
+                    case Direction.Right:
+                        otherIdx = gemIdx + 1;
+                        break;
+                    case Direction.Down:
+                        otherIdx = gemIdx - columns;
+                        break;
+                    case Direction.Left:
+                        otherIdx = gemIdx - 1;
+                        break;
+                }
+
+                GameObject thisGem = gems[gemIdx];
+                GameObject otherGem = gems[otherIdx];
+
+                GemSwap(thisGem, otherGem, (Direction)dir);
+
+                // gems[gemIdx] = otherGem;
+                // gems[otherIdx] = thisGem;
 
 
                 bool hasCombo = CheckBoard();
@@ -237,7 +233,25 @@ public class Board : MonoBehaviour
                 }
                 else
                 {
+                    Direction backDir;
+                    switch (dir)
+                    {
+                        case Direction.Up:
+                            backDir = Direction.Down;
+                            break;
+                        case Direction.Right:
+                            backDir = Direction.Left;
+                            break;
+                        case Direction.Down:
+                            backDir = Direction.Up;
+                            break;
+                        case Direction.Left:
+                        default:
+                            backDir = Direction.Right;
+                            break;
+                    }
                     // move gem back
+                    StartCoroutine(GemSwapBack(thisGem, gemIdx, otherGem, otherIdx, backDir));
                 }
 
                 break;
@@ -248,6 +262,17 @@ public class Board : MonoBehaviour
                 //     offset = Vector3.zero;
                 //     break;
         }
+    }
+
+    IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        GemSwap(gem, other, direction);
+        // gems[gemIdx] = other;
+        // gems[otherIdx] = gem;
+        isLocked = false;
+
     }
 
 

@@ -20,6 +20,11 @@ public class Gem : MonoBehaviour
     [SerializeField] private float fallAcceleration;
     [SerializeField] private float maxSpeed;
 
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
     public void SetInitialY(float y)
     {
         initialY = y;
