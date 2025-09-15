@@ -24,7 +24,6 @@ public class Board : MonoBehaviour
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject[] gemPrefabs;
 
-
     // initialization *********************************************
     private int _col = 0;
     private int _row = 0;
@@ -40,9 +39,6 @@ public class Board : MonoBehaviour
     private List<List<GameObject>> board = new List<List<GameObject>>();
     private List<GameObject> spawnPoints = new List<GameObject>();
     private List<GameObject> gems = new List<GameObject>();
-
-
-
 
     void Start()
     {
@@ -81,7 +77,6 @@ public class Board : MonoBehaviour
         }
     }
 
-
     void SpawnGem(int row, int col)
     {
         int idx = UnityEngine.Random.Range(0, gemPrefabs.Length);
@@ -94,34 +89,11 @@ public class Board : MonoBehaviour
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
         gem.name = $"{gem.name.Replace("(Clone)", "")}";
+        gem.color = gem.name.Split("-")[1];
         gem.row = row;
         gem.col = col;
         gem.SetInitialY(targetSlot.transform.position.y);
         gems.Add(gemGO);
-    }
-
-    IEnumerator InitializeGems()
-    {
-        while (_row < rows)
-        {
-            SpawnGem(_row, _col);
-
-            yield return new WaitForSeconds(0.05f);
-
-            int lastColIdx = columns - 1;
-            if (_col >= lastColIdx)
-            {
-                _col = 0;
-                _row++;
-            }
-            else
-            {
-                _col++;
-            }
-
-            Debug.Log($"InitializeGems ::: {_row}::{_col}");
-        }
-        Debug.Log("Gem initialization finished!");
     }
 
     void HandleGemTouch()
@@ -216,11 +188,10 @@ public class Board : MonoBehaviour
                 GameObject thisGem = gems[gemIdx];
                 GameObject otherGem = gems[otherIdx];
 
-                GemSwap(thisGem, otherGem, (Direction)dir);
+                GemSwap(thisGem, gemIdx, otherGem, otherIdx, (Direction)dir);
 
                 // gems[gemIdx] = otherGem;
                 // gems[otherIdx] = thisGem;
-
 
                 bool hasCombo = CheckBoard();
 
@@ -255,7 +226,6 @@ public class Board : MonoBehaviour
                 }
 
                 break;
-
                 // case TouchPhase.Ended:
                 //     isDragging = false;
                 //     currentRigidbody = null;
@@ -264,41 +234,129 @@ public class Board : MonoBehaviour
         }
     }
 
-    IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        GemSwap(gem, other, direction);
-        // gems[gemIdx] = other;
-        // gems[otherIdx] = gem;
-        isLocked = false;
-
-    }
-
-
-    void GemSwap(GameObject gem, GameObject other, Direction direction)
+    void GemSwap(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
         Debug.Log($"Gem: {gem.name} Other: {other.name} Direction: {direction}");
         Gem thisGem = gem.GetComponent<Gem>();
         Gem otherGem = other.GetComponent<Gem>();
-
-
-
-        // Vector3 thisPos = new Vector3(gem.transform.position.x, gem.transform.position.y, 0);
-        // Vector3 otherPos = new Vector3(other.transform.position.x, other.transform.position.y, 0);
 
         thisGem.Move(other.transform.position);
         otherGem.Move(gem.transform.position);
 
         (otherGem.row, thisGem.row) = (thisGem.row, otherGem.row);
         (otherGem.col, thisGem.col) = (thisGem.col, otherGem.col);
+
+        gems[gemIdx] = other;
+        gems[otherIdx] = gem;
+
+        gems = gems.OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().col).ToList();
+
     }
 
     bool CheckBoard()
     {
         Debug.Log("CheckBoard");
 
+        List<Gem> gemsToRemove = new List<Gem>();
+        List<Gem> currSequence = new List<Gem>();
+
+        List<List<Gem>> rowGems = new List<List<Gem>>();
+        List<List<Gem>> colGems = new List<List<Gem>>();
+
+
+        // initialize rowGems / colGems
+        for (int i = 0; i < rows; i++)
+        {
+            rowGems.Add(new List<Gem>());
+        }
+        for (int i = 0; i < columns; i++)
+        {
+            colGems.Add(new List<Gem>());
+        }
+
+
+        // assign gems to rowGems / colGems
+        int tempRow = 0;
+        int tempCol = 0;
+        for (int i = 0; i < gems.Count; i++)
+        {
+            Gem currGem = gems[i].GetComponent<Gem>();
+
+            rowGems[tempRow].Add(currGem);
+            colGems[tempCol].Add(currGem);
+            // Debug.Log($"i {i} tempRow {tempRow} tempCol {tempCol} color {currGem.color}");
+
+            int lastColIdx = columns - 1;
+            if (tempCol >= lastColIdx)
+            {
+                tempCol = 0;
+                tempRow++;
+            }
+            else
+            {
+                tempCol++;
+            }
+        }
+
+        for (int ri = 0; ri < rowGems.Count; ri++)
+        {
+            for (int rj = 0; rj < rowGems[ri].Count; rj++)
+            {
+                Gem rowItem = rowGems[ri][rj];
+                Debug.Log($"CheckBoard ::: Rows -> {rowItem.color} :: Row {rowItem.row} Col {rowItem.col}");
+            }
+        }
+        for (int ci = 0; ci < colGems.Count; ci++)
+        {
+            for (int cj = 0; cj < colGems[ci].Count; cj++)
+            {
+                Gem colItem = colGems[ci][cj];
+                Debug.Log($"CheckBoard ::: Cols -> {colItem.color} :: Col {colItem.col} Row {colItem.row}");
+            }
+        }
+
+
+
+        // for (int i = 0; i < gems.Count; i++)
+        // {
+        //     GameObject gemGO = gems[i];
+        //     Gem gem = gemGO.GetComponent<Gem>();
+        //     Debug.Log($"CheckBoard {gem.color} :: {gem.row} {gem.col}");
+        // }
+
         return false;
     }
 
+    IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        GemSwap(gem, gemIdx, other, otherIdx, direction);
+        isLocked = false;
+
+    }
+
+    IEnumerator InitializeGems()
+    {
+        while (_row < rows)
+        {
+            SpawnGem(_row, _col);
+
+            yield return new WaitForSeconds(0.05f);
+
+            int lastColIdx = columns - 1;
+            if (_col >= lastColIdx)
+            {
+                _col = 0;
+                _row++;
+            }
+            else
+            {
+                _col++;
+            }
+
+            Debug.Log($"InitializeGems ::: {_row}::{_col}");
+        }
+        Debug.Log("Gem initialization finished!");
+    }
 }

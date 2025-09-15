@@ -8,6 +8,8 @@ public class Gem : MonoBehaviour
     private float initialY;
     private float speed = 0f;
 
+    public string color;
+
     public int row;
     public int col;
 
@@ -63,14 +65,13 @@ public class Gem : MonoBehaviour
 
         if (isMoving)
         {
-
             if (Vector3.Distance(gameObject.transform.position, destination) > 0.000001f)
             {
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
             }
             else
             {
-                Debug.Log("Done!");
+                // Debug.Log("Done!");
                 isMoving = false;
                 destination = Vector3.zero;
             }
