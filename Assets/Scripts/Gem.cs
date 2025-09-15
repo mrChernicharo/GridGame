@@ -4,17 +4,29 @@ using UnityEngine;
 
 public class Gem : MonoBehaviour
 {
-    private float targetY;
+    private bool isInitializing = true;
+    private float initialY;
     private float speed = 0f;
+
+
+    // *************
+    private bool isMoving = false;
+    private Vector3 destination;
+    [SerializeField] private float moveSpeed;
 
     [SerializeField] private float fallAcceleration;
     [SerializeField] private float maxSpeed;
 
-    public void SetTargetY(float y)
+    public void SetInitialY(float y)
     {
-        targetY = y;
+        initialY = y;
     }
 
+    public void Move(Vector3 _destination)
+    {
+        isMoving = true;
+        destination = _destination;
+    }
 
     void Start()
     {
@@ -26,15 +38,34 @@ public class Gem : MonoBehaviour
 
         Vector3 pos = gameObject.transform.position;
 
-        if (pos.y > targetY)
+        if (isInitializing)
         {
-            speed += fallAcceleration * Time.deltaTime;
-            pos.y -= Mathf.Min(speed, maxSpeed);
-            gameObject.transform.position = pos;
+            if (pos.y > initialY)
+            {
+
+                speed += fallAcceleration * Time.deltaTime;
+                pos.y -= Mathf.Min(speed, maxSpeed);
+                gameObject.transform.position = pos;
+            }
+            else
+            {
+                isInitializing = false;
+            }
         }
-        else
+
+        if (isMoving)
         {
 
+            if (Vector3.Distance(gameObject.transform.position, destination) > 0.000001f)
+            {
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                Debug.Log("Done!");
+                isMoving = false;
+                destination = Vector3.zero;
+            }
         }
 
     }

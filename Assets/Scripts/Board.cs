@@ -93,7 +93,7 @@ public class Board : MonoBehaviour
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
         gem.name = $"{gem.name.Replace("(Clone)", "")}-{col}-{row}";
-        gem.SetTargetY(targetSlot.transform.position.y);
+        gem.SetInitialY(targetSlot.transform.position.y);
 
         gems.Add(gemGO);
     }
@@ -165,12 +165,14 @@ public class Board : MonoBehaviour
 
                 if (distance <= dragTriggerDistance) return;
 
+
                 float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
                 float angleDeg = angleRad * (180 / Mathf.PI);
                 // Debug.Log($"Dragging! {angleDeg}");
 
                 Gem gem = currentRigidbody.GetComponent<Gem>();
 
+                // TODO: fix this
                 string matches = Regex.Match(gem.name, @"(\d+)-(\d+)").ToString();
                 string[] coords = matches.Split('-');
 
@@ -179,6 +181,10 @@ public class Board : MonoBehaviour
                 int gemIdx = gemRow * columns + gemCol;
                 // Debug.Log($"matches! {matches} - x: {gemCol} y: {gemRow} gemIdx: {gemIdx}");
 
+                // Reset everything
+                isDragging = false;
+                currentRigidbody = null;
+                offset = Vector3.zero;
 
                 // DOWN
                 if (angleDeg >= -135 && angleDeg < -45)
@@ -187,6 +193,9 @@ public class Board : MonoBehaviour
                     {
                         GameObject other = gems[gemIdx - columns];
                         GemSwap(gems[gemIdx], other, Direction.Down);
+
+                        gems[gemIdx - columns] = gems[gemIdx];
+                        gems[gemIdx] = other;
                     }
                 }
                 // RIGHT
@@ -196,6 +205,9 @@ public class Board : MonoBehaviour
                     {
                         GameObject other = gems[gemIdx + 1];
                         GemSwap(gems[gemIdx], other, Direction.Right);
+
+                        gems[gemIdx + 1] = gems[gemIdx];
+                        gems[gemIdx] = other;
                     }
                 }
                 // UP
@@ -205,6 +217,9 @@ public class Board : MonoBehaviour
                     {
                         GameObject other = gems[gemIdx + columns];
                         GemSwap(gems[gemIdx], other, Direction.Up);
+
+                        gems[gemIdx + columns] = gems[gemIdx];
+                        gems[gemIdx] = other;
                     }
                 }
                 // LEFT
@@ -214,15 +229,20 @@ public class Board : MonoBehaviour
                     {
                         GameObject other = gems[gemIdx - 1];
                         GemSwap(gems[gemIdx], other, Direction.Left);
+
+                        gems[gemIdx - 1] = gems[gemIdx];
+                        gems[gemIdx] = other;
+
                     }
                 }
+
                 break;
 
-            case TouchPhase.Ended:
-                isDragging = false;
-                currentRigidbody = null;
-                offset = Vector3.zero;
-                break;
+                // case TouchPhase.Ended:
+                //     isDragging = false;
+                //     currentRigidbody = null;
+                //     offset = Vector3.zero;
+                //     break;
         }
     }
 
@@ -230,5 +250,16 @@ public class Board : MonoBehaviour
     void GemSwap(GameObject gem, GameObject other, Direction direction)
     {
         Debug.Log($"Gem: {gem.name} Other: {other.name} Direction: {direction}");
+        Gem thisGem = gem.GetComponent<Gem>();
+        Gem otherGem = other.GetComponent<Gem>();
+
+
+
+        // Vector3 thisPos = new Vector3(gem.transform.position.x, gem.transform.position.y, 0);
+        // Vector3 otherPos = new Vector3(other.transform.position.x, other.transform.position.y, 0);
+
+        thisGem.Move(other.transform.position);
+        otherGem.Move(gem.transform.position);
+
     }
 }
