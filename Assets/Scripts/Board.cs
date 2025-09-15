@@ -94,12 +94,12 @@ public class Board : MonoBehaviour
 
     void SpawnGem(int row, int col)
     {
-        int idx = UnityEngine.Random.Range(0, gemPrefabs.Length);
-        GameObject gemPrefab = gemPrefabs[idx];
-        GameObject spawnPoint = spawnPoints[col];
+        int RandPrefabIdx = UnityEngine.Random.Range(0, gemPrefabs.Length);
+        GameObject gemPrefab = gemPrefabs[RandPrefabIdx];
 
+        GameObject spawnPoint = spawnPoints[col];
         GameObject targetSlot = board[row][col];
-        Debug.Log($"targetSlot {targetSlot.transform.position}");
+        // Debug.Log($"targetSlot {targetSlot.transform.position}");
 
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
@@ -211,47 +211,56 @@ public class Board : MonoBehaviour
                 // pluck gems to remove
                 if (boardResult.gemsToRemove.Count > 0)
                 {
-                    for (int i = 0; i < boardResult.colGems.Count; i++)
-                    {
-                        List<Gem> gemsInCol = boardResult.colGems[i];
-                        int colDestroyCount = 0;
-                        for (int j = 0; j < gemsInCol.Count; j++)
-                        {
-                            Gem currGem = gemsInCol[j];
-                            int gIdx = currGem.row * columns + currGem.col;
-                            GameObject gGO = gems[gIdx];
 
-                            if (gGO.GetComponent<Gem>() != currGem)
-                            {
-                                Debug.LogError("Houston!");
-                            }
+                    StartCoroutine(SpawnNewGems(boardResult));
 
+                    // for (int i = 0; i < boardResult.colGems.Count; i++)
+                    // {
+                    //     List<Gem> gemsInCol = boardResult.colGems[i];
+                    //     int colDestroyCount = 0;
+                    //     for (int j = 0; j < gemsInCol.Count; j++)
+                    //     {
+                    //         Gem currGem = gemsInCol[j];
+                    //         int gIdx = currGem.row * columns + currGem.col;
+                    //         GameObject gGO = gems[gIdx];
 
-                            if (boardResult.gemsToRemove.Contains(currGem))
-                            {
-                                // destroy gems to remove
-                                colDestroyCount++;
-                                gems[gIdx] = null;
-                                currGem.Explode();
-                            }
-                            else
-                            {
-                                if (colDestroyCount > 0)
-                                {
-                                    // handle falling gems
-                                    currGem.Fall(colDestroyCount);
-                                }
-                            }
-                        }
+                    //         if (gGO.GetComponent<Gem>() != currGem)
+                    //         {
+                    //             Debug.LogError("Houston!");
+                    //         }
 
 
-                        // spawn new gems
+                    //         if (boardResult.gemsToRemove.Contains(currGem))
+                    //         {
+                    //             // destroy gems to remove
+                    //             colDestroyCount++;
+                    //             gems[gIdx] = null;
+                    //             currGem.Explode();
+                    //         }
+                    //         else
+                    //         {
+                    //             if (colDestroyCount > 0)
+                    //             {
+                    //                 // handle falling gems
+                    //                 currGem.Fall(colDestroyCount);
+                    //             }
+                    //         }
+                    //     }
 
-                    }
+                    //     // spawn new gems
+                    //     while (colDestroyCount > 0)
+                    //     {
+                    //         colDestroyCount--;
+                    //         SpawnGem(rows - colDestroyCount - 1, i);
+                    //     }
+                    // }
 
-                    // update gems' rows & cols
+                    // // update gems' rows & cols
+                    // gems = gems.OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().row).ToList();
 
-                    isLocked = false;
+                    // gems.ForEach(g => g.GetComponent<Gem>().PrintInfo());
+
+                    // isLocked = false;
                 }
                 else
                 {
@@ -278,10 +287,6 @@ public class Board : MonoBehaviour
 
                 break;
                 // case TouchPhase.Ended:
-                //     isDragging = false;
-                //     currentRigidbody = null;
-                //     offset = Vector3.zero;
-                //     break;
         }
     }
 
@@ -446,6 +451,68 @@ public class Board : MonoBehaviour
         return result;
     }
 
+    IEnumerator SpawnNewGems(BoardResult br)
+    {
+        for (int i = 0; i < br.colGems.Count; i++)
+        {
+            int colDestroyCount = 0;
+            List<Gem> gemsInCol = br.colGems[i];
+
+            yield return new WaitForSeconds(0.1f);
+
+            for (int j = 0; j < gemsInCol.Count; j++)
+            {
+
+
+                yield return new WaitForSeconds(0.1f);
+
+                Gem currGem = gemsInCol[j];
+                int gIdx = currGem.row * columns + currGem.col;
+                GameObject gGO = gems[gIdx];
+
+                if (gGO.GetComponent<Gem>() != currGem) Debug.LogError("Houston!");
+
+
+                if (br.gemsToRemove.Contains(currGem))
+                {
+                    br.gemsToRemove.Remove(currGem);
+                    // destroy combo'd gems
+                    colDestroyCount++;
+                    gems[gIdx] = null;
+                    currGem.Explode();
+                }
+                else
+                {
+                    if (colDestroyCount > 0)
+                    {
+                        // handle falling gems
+                        currGem.Fall(colDestroyCount);
+                    }
+                }
+            }
+
+            // spawn new gems
+            while (colDestroyCount > 0)
+            {
+                colDestroyCount--;
+                int spawnRow = gemsInCol.Count - 1 - colDestroyCount;
+                Debug.Log($"spawn row {spawnRow}");
+
+                yield return new WaitForSeconds(0.3f);
+                SpawnGem(spawnRow, i);
+            }
+        }
+
+
+        // update gems' rows & cols
+        gems = gems.Where(g => g != null).OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().col).ToList();
+        // gems.ForEach(g => g.GetComponent<Gem>().PrintInfo());
+
+        yield return new WaitForSeconds(0.1f);
+
+        isLocked = false;
+    }
+
     IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
         yield return new WaitForSeconds(1.0f);
@@ -474,9 +541,9 @@ public class Board : MonoBehaviour
                 _col++;
             }
 
-            Debug.Log($"InitializeGems ::: {_row}::{_col}");
+            // Debug.Log($"InitializeGems ::: {_row}::{_col}");
         }
-        Debug.Log("Gem initialization finished!");
+        // Debug.Log("Gem initialization finished!");
     }
 }
 

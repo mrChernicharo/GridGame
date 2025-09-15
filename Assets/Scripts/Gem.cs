@@ -48,6 +48,7 @@ public class Gem : MonoBehaviour
     public void Fall(int slotCount)
     {
         Debug.Log($"Fall!!! {color} ::: {slotCount} ");
+        row -= slotCount;
         isFalling = true;
         yPosition -= slotCount * 0.75f;
     }
@@ -76,6 +77,7 @@ public class Gem : MonoBehaviour
                 speed = 0f;
                 isInitializing = false;
             }
+            return;
         }
 
         if (isFalling)
@@ -92,11 +94,12 @@ public class Gem : MonoBehaviour
                 speed = 0f;
                 isFalling = false;
             }
+            return;
         }
 
         if (isMoving)
         {
-            if (Vector3.Distance(gameObject.transform.position, destination) > 0.000001f)
+            if (Vector3.Distance(gameObject.transform.position, destination) > 0.001f)
             {
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
             }
@@ -110,4 +113,8 @@ public class Gem : MonoBehaviour
 
     }
 
+    public void PrintInfo()
+    {
+        Debug.Log($"GEM color: {color}, row: {row} col: {col}");
+    }
 }
