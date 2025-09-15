@@ -239,7 +239,7 @@ public class Board : MonoBehaviour
                                 if (colDestroyCount > 0)
                                 {
                                     // handle falling gems
-                                    gem.Fall(colDestroyCount);
+                                    currGem.Fall(colDestroyCount);
                                 }
                             }
                         }
@@ -287,7 +287,7 @@ public class Board : MonoBehaviour
 
     void GemSwap(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
-        Debug.Log($"Gem: {gem.name} Other: {other.name} Direction: {direction}");
+        Debug.Log($"::: GemSwap ::: Gem: {gem.name} Other: {other.name} Direction: {direction}");
         Gem thisGem = gem.GetComponent<Gem>();
         Gem otherGem = other.GetComponent<Gem>();
 
@@ -306,7 +306,7 @@ public class Board : MonoBehaviour
 
     BoardResult CheckBoard()
     {
-        Debug.Log("CheckBoard");
+        // Debug.Log("CheckBoard");
 
         List<List<Gem>> rowGems = new List<List<Gem>>();
         List<List<Gem>> colGems = new List<List<Gem>>();
@@ -349,8 +349,8 @@ public class Board : MonoBehaviour
         {
             List<Gem> currRow = rowGems[i];
 
-            Debug.Log("-------------------------------");
-            Debug.Log($"=================== Row # {i}");
+            // Debug.Log("-------------------------------");
+            // Debug.Log($"=================== Row # {i}");
 
             for (int j = 0; j < currRow.Count; j++)
             {
@@ -374,7 +374,7 @@ public class Board : MonoBehaviour
                     {
                         if (currSequence.Count >= 3)
                         {
-                            Debug.Log("COMBO! COMBO!");
+                            // Debug.Log("COMBO! COMBO!");
                             foreach (Gem obj in currSequence) gemsToRemove.Add(obj);
                         }
 
@@ -382,8 +382,8 @@ public class Board : MonoBehaviour
                         if (!isLastItem) currSequence.Add(item);
                     }
                 }
-                Debug.Log($"currSequence ::::::");
-                currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
+                // Debug.Log($"currSequence ::::::");
+                // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
             }
         }
 
@@ -395,8 +395,8 @@ public class Board : MonoBehaviour
         {
             List<Gem> currCol = colGems[i];
 
-            Debug.Log("-------------------------------");
-            Debug.Log($"=================== Col # {i}");
+            // Debug.Log("-------------------------------");
+            // Debug.Log($"=================== Col # {i}");
 
             for (int j = 0; j < currCol.Count; j++)
             {
@@ -420,7 +420,7 @@ public class Board : MonoBehaviour
                     {
                         if (currSequence.Count >= 3)
                         {
-                            Debug.Log("COMBO! COMBO!");
+                            // Debug.Log("COMBO! COMBO!");
                             foreach (Gem obj in currSequence) gemsToRemove.Add(obj);
                         }
 
@@ -428,8 +428,8 @@ public class Board : MonoBehaviour
                         if (!isLastItem) currSequence.Add(item);
                     }
                 }
-                Debug.Log($"currSequence ::::::");
-                currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
+                // Debug.Log($"currSequence ::::::");
+                // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
             }
         }
 

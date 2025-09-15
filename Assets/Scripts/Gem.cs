@@ -5,7 +5,8 @@ using UnityEngine;
 public class Gem : MonoBehaviour
 {
     private bool isInitializing = true;
-    private float initialY;
+    private bool isFalling = true;
+    private float yPosition;
     private float speed = 0f;
 
     public string color;
@@ -29,7 +30,7 @@ public class Gem : MonoBehaviour
 
     public void SetInitialY(float y)
     {
-        initialY = y;
+        yPosition = y;
     }
 
     public void Move(Vector3 _destination)
@@ -46,7 +47,9 @@ public class Gem : MonoBehaviour
 
     public void Fall(int slotCount)
     {
-
+        Debug.Log($"Fall!!! {color} ::: {slotCount} ");
+        isFalling = true;
+        yPosition -= slotCount * 0.75f;
     }
 
     void Start()
@@ -61,7 +64,7 @@ public class Gem : MonoBehaviour
 
         if (isInitializing)
         {
-            if (pos.y > initialY)
+            if (pos.y > yPosition)
             {
 
                 speed += fallAcceleration * Time.deltaTime;
@@ -70,7 +73,24 @@ public class Gem : MonoBehaviour
             }
             else
             {
+                speed = 0f;
                 isInitializing = false;
+            }
+        }
+
+        if (isFalling)
+        {
+            if (pos.y > yPosition)
+            {
+
+                speed += fallAcceleration * Time.deltaTime;
+                pos.y -= Mathf.Min(speed, maxSpeed);
+                gameObject.transform.position = pos;
+            }
+            else
+            {
+                speed = 0f;
+                isFalling = false;
             }
         }
 
