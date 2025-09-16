@@ -56,6 +56,7 @@ public class Board : MonoBehaviour
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject[] gemPrefabs;
     [SerializeField] private GameObject[] explosionEfx;
+    [SerializeField] private Score score;
 
     // initialization *********************************************
     private int _col = 0;
@@ -454,6 +455,7 @@ public class Board : MonoBehaviour
                         colDestroyCount++;
                         gems[gIdx] = null;
                         currGem.Explode();
+                        score.AddScore(100);
                     }
                     else
                     {
