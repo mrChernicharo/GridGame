@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class Gem : MonoBehaviour
     private float yPosition;
     private float speed = 0f;
 
-    public string color;
+    public GemColor color;
 
     public int row;
     public int col;
@@ -20,56 +21,22 @@ public class Gem : MonoBehaviour
     private bool isMoving = false;
     private Vector3 destination;
     [SerializeField] private float moveSpeed;
-
     [SerializeField] private float fallAcceleration;
     [SerializeField] private float maxSpeed;
+    [SerializeField] private bool showDebugText;
 
-    public bool IsMoving()
+    private TextMeshPro textMesh;
+
+    void Awake()
     {
-        return isMoving;
-    }
-
-    public void SetInitialY(float y)
-    {
-        yPosition = y;
-    }
-
-    public void Move(Vector3 _destination)
-    {
-        isMoving = true;
-        destination = _destination;
-    }
-
-    public void Explode()
-    {
-        Destroy(gameObject);
-    }
-
-
-    public void Fall(int fallCount)
-    {
-        int newRow = row - fallCount;
-        float newYposition = -3.5f + 0.75f * newRow;
-
-
-        Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");
-
-        row = newRow;
-        yPosition = newYposition;
-        isFalling = true;
-    }
-
-    public void UpdateText()
-    {
-        TextMeshPro text = this.GetComponentInChildren<TextMeshPro>();
-        if (text != null)
-        {
-            text.text = $"{row}-{col}";
-        }
+        name = $"{name.Replace("(Clone)", "")}";
+        color = (GemColor)Enum.Parse(typeof(GemColor), name.Split("-")[1]);
     }
 
     void Start()
     {
+        textMesh = this.GetComponentInChildren<TextMeshPro>();
+        textMesh.enabled = showDebugText;
 
     }
 
@@ -132,6 +99,51 @@ public class Gem : MonoBehaviour
         }
 
     }
+
+
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
+    public void SetInitialY(float y)
+    {
+        yPosition = y;
+    }
+
+    public void Move(Vector3 _destination)
+    {
+        isMoving = true;
+        destination = _destination;
+    }
+
+    public void Explode()
+    {
+        Destroy(gameObject);
+    }
+
+
+    public void Fall(int fallCount)
+    {
+        int newRow = row - fallCount;
+        float newYposition = -3.5f + 0.75f * newRow;
+
+
+        Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");
+
+        row = newRow;
+        yPosition = newYposition;
+        isFalling = true;
+    }
+
+    public void UpdateText()
+    {
+        if (textMesh != null && showDebugText)
+        {
+            textMesh.text = $"{row}-{col}";
+        }
+    }
+
 
     public void PrintInfo()
     {

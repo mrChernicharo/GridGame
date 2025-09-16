@@ -226,6 +226,7 @@ MonoBehaviour:
   moveSpeed: 3
   fallAcceleration: 0.01
   maxSpeed: 1.2
+  showDebugText: 0
 --- !u!33 &2310231959406780009
 MeshFilter:
   m_ObjectHideFlags: 0

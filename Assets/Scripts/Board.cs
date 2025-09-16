@@ -14,6 +14,11 @@ enum Direction
     Up, Down, Left, Right
 }
 
+public enum GemColor
+{
+    Amber, Emerald, Fucsia, Ruby, Saphire, Turquoise,
+}
+
 struct BoardResult
 {
     public List<List<Gem>> rowGems;
@@ -25,6 +30,18 @@ struct BoardResult
         rowGems = rg;
         colGems = cg;
         gemsToRemove = gtr;
+    }
+}
+
+struct GemColorAndPrefab
+{
+    public GemColor color;
+    public GameObject prefab;
+
+    public GemColorAndPrefab(GameObject _prefab, GemColor _color)
+    {
+        color = _color;
+        prefab = _prefab;
     }
 }
 
@@ -92,26 +109,35 @@ public class Board : MonoBehaviour
         }
     }
 
-    void SpawnGem(int row_, int col_)
+    GemColorAndPrefab PickRandomGemColorAndPrefab()
     {
         int RandPrefabIdx = UnityEngine.Random.Range(0, gemPrefabs.Length);
+
         GameObject gemPrefab = gemPrefabs[RandPrefabIdx];
 
-        GameObject spawnPoint = spawnPoints[col_];
-        GameObject targetSlot = board[row_][col_];
+        string colorName = gemPrefab.GetComponent<Renderer>().sharedMaterial.name;
+        GemColor color = (GemColor)Enum.Parse(typeof(GemColor), colorName);
+        // Debug.Log($"PickRandomGemColorAndPrefab ::: colorName: {color}");
 
-        GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
+        return new GemColorAndPrefab(gemPrefab, color);
+    }
+
+
+    void SpawnGem(GameObject prefab, int row_, int col_)
+    {
+        GameObject spawnPoint = spawnPoints[col_];
+        GameObject gemGO = Instantiate(prefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
-        gem.name = $"{gem.name.Replace("(Clone)", "")}";
-        gem.color = gem.name.Split("-")[1];
+
         gem.row = row_;
         gem.col = col_;
-        gem.SetInitialY(targetSlot.transform.position.y);
 
+        GameObject targetSlot = board[gem.row][gem.col];
+
+        gem.SetInitialY(targetSlot.transform.position.y);
         gem.UpdateText();
 
         Debug.Log($"color {gem.color} col {col_} initialY {targetSlot.transform.position.y}");
-        // gem.PrintInfo();
 
         gems.Add(gemGO);
     }
@@ -448,7 +474,8 @@ public class Board : MonoBehaviour
                 // Debug.Log($"spawn row {spawnRow}");
 
                 yield return new WaitForSeconds(0.3f);
-                SpawnGem(spawnRow, i);
+                GemColorAndPrefab picked = PickRandomGemColorAndPrefab();
+                SpawnGem(picked.prefab, spawnRow, i);
             }
         }
 
@@ -471,13 +498,43 @@ public class Board : MonoBehaviour
 
     }
 
+    bool CanSpawnGem(GemColor color)
+    {
+        Debug.Log($"CanSpawnGem {_row} {_col} gems:{gems.Count}");
+
+        if (_col >= 2)
+        {
+            Gem leftNeighbor = gems[_row * columns + (_col - 1)].GetComponent<Gem>();
+            Gem leftNeighbor2 = gems[_row * columns + (_col - 2)].GetComponent<Gem>();
+
+            if (leftNeighbor.color == color && leftNeighbor2.color == color)
+                return false;
+        }
+        if (_row >= 2)
+        {
+            Gem bottomNeighbor = gems[(_row - 1) * columns + _col].GetComponent<Gem>();
+            Gem bottomNeighbor2 = gems[(_row - 2) * columns + _col].GetComponent<Gem>();
+
+            if (bottomNeighbor.color == color && bottomNeighbor2.color == color)
+                return false;
+        }
+        return true;
+    }
+
     IEnumerator InitializeGems()
     {
         while (_row < rows)
         {
-            SpawnGem(_row, _col);
+            yield return new WaitForSeconds(0.025f);
 
-            yield return new WaitForSeconds(0.05f);
+            // prevent combos at beginning
+            GemColorAndPrefab picked = PickRandomGemColorAndPrefab();
+            while (!CanSpawnGem(picked.color))
+            {
+                picked = PickRandomGemColorAndPrefab();
+            }
+
+            SpawnGem(picked.prefab, _row, _col);
 
             int lastColIdx = columns - 1;
             if (_col >= lastColIdx)
@@ -489,7 +546,6 @@ public class Board : MonoBehaviour
             {
                 _col++;
             }
-
             // Debug.Log($"InitializeGems ::: {_row}::{_col}");
         }
         // Debug.Log("Gem initialization finished!");

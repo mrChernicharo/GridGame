@@ -305,10 +305,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CELL_GAP: 0.75
-  LEFT_MARGIN: -1.5
+  LEFT_MARGIN: -1.88
   TOP_MARGIN: -3.5
   rows: 9
-  columns: 5
+  columns: 6
   slotPrefab: {fileID: 8728490242987617497, guid: 54ddf12a5ea634bc8bedd41cd0f5d5ac, type: 3}
   gemPrefabs:
   - {fileID: 5909985692470038501, guid: c1d7c6c0bbec947c09570133bfcdbcf4, type: 3}
