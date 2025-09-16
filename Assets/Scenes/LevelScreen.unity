@@ -210,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 404703269}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 1.65, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -304,11 +304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d160e971f7cfe45169204d92e777e64e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CELL_GAP: 0.75
-  LEFT_MARGIN: -1.88
+  LEFT_MARGIN: 0
   TOP_MARGIN: -3.5
   rows: 9
-  columns: 6
+  columns: 7
   slotPrefab: {fileID: 8728490242987617497, guid: 54ddf12a5ea634bc8bedd41cd0f5d5ac, type: 3}
   gemPrefabs:
   - {fileID: 5909985692470038501, guid: c1d7c6c0bbec947c09570133bfcdbcf4, type: 3}
@@ -317,6 +316,13 @@ MonoBehaviour:
   - {fileID: 7858903722236450420, guid: 9e376f83d40854cb588f3ee367e4cf9a, type: 3}
   - {fileID: 6855746660500149219, guid: d4d628a89f49140bd9834cd650be6547, type: 3}
   - {fileID: 8136019642635834622, guid: e4231101f1e374f92b9a0230c0272853, type: 3}
+  explosionEfx:
+  - {fileID: 5897272962906495582, guid: d6124ba75ae1345aeaf667a53e0a68ed, type: 3}
+  - {fileID: 945039320894468918, guid: d85e42ff1bf964d58a8bdab701cef4cd, type: 3}
+  - {fileID: 1797375914704839305, guid: d636c551bdba94beab67032c85d1ff1e, type: 3}
+  - {fileID: 3412605677971524250, guid: 7c8f789c7750e4670a99e68ed5c93a2a, type: 3}
+  - {fileID: 8919747977466964624, guid: 214e293a407824410a25448c5ae88f71, type: 3}
+  - {fileID: 3105562973509253743, guid: 1197e89cbd1974e05b2a8ff51dfda13d, type: 3}
 --- !u!1 &914693757
 GameObject:
   m_ObjectHideFlags: 0

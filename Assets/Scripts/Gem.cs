@@ -12,6 +12,7 @@ public class Gem : MonoBehaviour
     private float speed = 0f;
 
     public GemColor color;
+    public int prefabIdx;
 
     public int row;
     public int col;
@@ -31,6 +32,15 @@ public class Gem : MonoBehaviour
     {
         name = $"{name.Replace("(Clone)", "")}";
         color = (GemColor)Enum.Parse(typeof(GemColor), name.Split("-")[1]);
+        prefabIdx = color switch
+        {
+            GemColor.Emerald => 1,
+            GemColor.Fucsia => 2,
+            GemColor.Ruby => 3,
+            GemColor.Saphire => 4,
+            GemColor.Turquoise => 5,
+            _ => 0,
+        };
     }
 
     void Start()
@@ -122,11 +132,10 @@ public class Gem : MonoBehaviour
         Destroy(gameObject);
     }
 
-
     public void Fall(int fallCount)
     {
         int newRow = row - fallCount;
-        float newYposition = -3.5f + 0.75f * newRow;
+        float newYposition = -3.5f + Board.CELL_GAP * newRow;
 
 
         Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");

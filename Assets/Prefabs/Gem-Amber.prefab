@@ -49,13 +49,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d49cef8968982442a88bafdedad18bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 
+  color: 0
   row: 0
   col: 0
   moveSpeed: 3
   fallAcceleration: 0.01
   maxSpeed: 1.2
   showDebugText: 0
+  explosionEffect: {fileID: 346784588861849089, guid: a2d89c6933b394ddaa2d7499f87aa067, type: 3}
 --- !u!33 &2952435691779066725
 MeshFilter:
   m_ObjectHideFlags: 0
