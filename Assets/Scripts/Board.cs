@@ -70,7 +70,7 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < rows; i++)
         {
-            List<GameObject> row = new List<GameObject>();
+            List<GameObject> boardRow = new List<GameObject>();
 
             for (int j = 0; j < columns; j++)
             {
@@ -86,28 +86,33 @@ public class Board : MonoBehaviour
 
                 GameObject slot = Instantiate(slotPrefab, pos, Quaternion.identity);
                 slot.name = $"{i}, {j}";
-                row.Add(slot);
+                boardRow.Add(slot);
             }
-            board.Add(row);
+            board.Add(boardRow);
         }
     }
 
-    void SpawnGem(int row, int col)
+    void SpawnGem(int row_, int col_)
     {
         int RandPrefabIdx = UnityEngine.Random.Range(0, gemPrefabs.Length);
         GameObject gemPrefab = gemPrefabs[RandPrefabIdx];
 
-        GameObject spawnPoint = spawnPoints[col];
-        GameObject targetSlot = board[row][col];
-        // Debug.Log($"targetSlot {targetSlot.transform.position}");
+        GameObject spawnPoint = spawnPoints[col_];
+        GameObject targetSlot = board[row_][col_];
 
         GameObject gemGO = Instantiate(gemPrefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
         Gem gem = gemGO.GetComponent<Gem>();
         gem.name = $"{gem.name.Replace("(Clone)", "")}";
         gem.color = gem.name.Split("-")[1];
-        gem.row = row;
-        gem.col = col;
+        gem.row = row_;
+        gem.col = col_;
         gem.SetInitialY(targetSlot.transform.position.y);
+
+        gem.UpdateText();
+
+        Debug.Log($"color {gem.color} col {col_} initialY {targetSlot.transform.position.y}");
+        // gem.PrintInfo();
+
         gems.Add(gemGO);
     }
 
@@ -213,54 +218,6 @@ public class Board : MonoBehaviour
                 {
 
                     StartCoroutine(SpawnNewGems(boardResult));
-
-                    // for (int i = 0; i < boardResult.colGems.Count; i++)
-                    // {
-                    //     List<Gem> gemsInCol = boardResult.colGems[i];
-                    //     int colDestroyCount = 0;
-                    //     for (int j = 0; j < gemsInCol.Count; j++)
-                    //     {
-                    //         Gem currGem = gemsInCol[j];
-                    //         int gIdx = currGem.row * columns + currGem.col;
-                    //         GameObject gGO = gems[gIdx];
-
-                    //         if (gGO.GetComponent<Gem>() != currGem)
-                    //         {
-                    //             Debug.LogError("Houston!");
-                    //         }
-
-
-                    //         if (boardResult.gemsToRemove.Contains(currGem))
-                    //         {
-                    //             // destroy gems to remove
-                    //             colDestroyCount++;
-                    //             gems[gIdx] = null;
-                    //             currGem.Explode();
-                    //         }
-                    //         else
-                    //         {
-                    //             if (colDestroyCount > 0)
-                    //             {
-                    //                 // handle falling gems
-                    //                 currGem.Fall(colDestroyCount);
-                    //             }
-                    //         }
-                    //     }
-
-                    //     // spawn new gems
-                    //     while (colDestroyCount > 0)
-                    //     {
-                    //         colDestroyCount--;
-                    //         SpawnGem(rows - colDestroyCount - 1, i);
-                    //     }
-                    // }
-
-                    // // update gems' rows & cols
-                    // gems = gems.OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().row).ToList();
-
-                    // gems.ForEach(g => g.GetComponent<Gem>().PrintInfo());
-
-                    // isLocked = false;
                 }
                 else
                 {
@@ -292,7 +249,7 @@ public class Board : MonoBehaviour
 
     void GemSwap(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
-        Debug.Log($"::: GemSwap ::: Gem: {gem.name} Other: {other.name} Direction: {direction}");
+        Debug.Log($"::: GemSwap ::: Gem: {gem.GetComponent<Gem>().color} Other: {other.GetComponent<Gem>().color} Direction: {direction}");
         Gem thisGem = gem.GetComponent<Gem>();
         Gem otherGem = other.GetComponent<Gem>();
 
@@ -301,6 +258,9 @@ public class Board : MonoBehaviour
 
         (otherGem.row, thisGem.row) = (thisGem.row, otherGem.row);
         (otherGem.col, thisGem.col) = (thisGem.col, otherGem.col);
+
+        thisGem.UpdateText();
+        otherGem.UpdateText();
 
         gems[gemIdx] = other;
         gems[otherIdx] = gem;
@@ -354,9 +314,6 @@ public class Board : MonoBehaviour
         {
             List<Gem> currRow = rowGems[i];
 
-            // Debug.Log("-------------------------------");
-            // Debug.Log($"=================== Row # {i}");
-
             for (int j = 0; j < currRow.Count; j++)
             {
                 Gem item = currRow[j];
@@ -387,21 +344,12 @@ public class Board : MonoBehaviour
                         if (!isLastItem) currSequence.Add(item);
                     }
                 }
-                // Debug.Log($"currSequence ::::::");
-                // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
             }
         }
-
-
-        // Debug.Log($"currSequence :::::: DONE CHECKING ROWS ::: currSequence.Count: {currSequence.Count}");
-        // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
 
         for (int i = 0; i < colGems.Count; i++)
         {
             List<Gem> currCol = colGems[i];
-
-            // Debug.Log("-------------------------------");
-            // Debug.Log($"=================== Col # {i}");
 
             for (int j = 0; j < currCol.Count; j++)
             {
@@ -433,8 +381,6 @@ public class Board : MonoBehaviour
                         if (!isLastItem) currSequence.Add(item);
                     }
                 }
-                // Debug.Log($"currSequence ::::::");
-                // currSequence.ForEach(gem => Debug.Log($"gem.color {gem.color} - gem.row {gem.row} - gem.col {gem.col}"));
             }
         }
 
@@ -442,10 +388,12 @@ public class Board : MonoBehaviour
 
         gemsToRemove = gemsToRemove.Distinct().ToList();
 
+        string removeMsg = "";
         foreach (Gem g in gemsToRemove)
         {
-            Debug.Log($"** Gem to remove ** {g.color} {g.row} {g.col}");
+            removeMsg.Concat($"** Gem to remove ** {g.color} {g.row} {g.col} \n");
         }
+        Debug.Log(removeMsg);
 
         BoardResult result = new BoardResult(rowGems, colGems, gemsToRemove);
         return result;
@@ -487,6 +435,7 @@ public class Board : MonoBehaviour
                     {
                         // handle falling gems
                         currGem.Fall(colDestroyCount);
+                        currGem.UpdateText();
                     }
                 }
             }
@@ -496,7 +445,7 @@ public class Board : MonoBehaviour
             {
                 colDestroyCount--;
                 int spawnRow = gemsInCol.Count - 1 - colDestroyCount;
-                Debug.Log($"spawn row {spawnRow}");
+                // Debug.Log($"spawn row {spawnRow}");
 
                 yield return new WaitForSeconds(0.3f);
                 SpawnGem(spawnRow, i);

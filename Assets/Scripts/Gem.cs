@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
+using System.ComponentModel;
 public class Gem : MonoBehaviour
 {
     private bool isInitializing = true;
@@ -45,12 +46,26 @@ public class Gem : MonoBehaviour
     }
 
 
-    public void Fall(int slotCount)
+    public void Fall(int fallCount)
     {
-        Debug.Log($"Fall!!! {color} ::: {slotCount} ");
-        row -= slotCount;
+        int newRow = row - fallCount;
+        float newYposition = -3.5f + 0.75f * newRow;
+
+
+        Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");
+
+        row = newRow;
+        yPosition = newYposition;
         isFalling = true;
-        yPosition -= slotCount * 0.75f;
+    }
+
+    public void UpdateText()
+    {
+        TextMeshPro text = this.GetComponentInChildren<TextMeshPro>();
+        if (text != null)
+        {
+            text.text = $"{row}-{col}";
+        }
     }
 
     void Start()
@@ -93,6 +108,11 @@ public class Gem : MonoBehaviour
             {
                 speed = 0f;
                 isFalling = false;
+
+                if (pos.y < -4f)
+                {
+                    Debug.LogError($"Fall Error! pos.y: {pos.y} yPosition {yPosition}");
+                }
             }
             return;
         }
@@ -118,3 +138,16 @@ public class Gem : MonoBehaviour
         Debug.Log($"GEM color: {color}, row: {row} col: {col}");
     }
 }
+
+
+
+
+// 0 => -3.5
+// 1 => -2.75
+// 2 => -2.0
+// 3 => -1.25
+// 4 => -0.5
+// 5 => 0.25
+// 6 => 1.0
+// 7 => 1.75
+// 8 => 2.5
