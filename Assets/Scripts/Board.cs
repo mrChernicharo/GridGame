@@ -136,7 +136,7 @@ public class Board : MonoBehaviour
         gem.SetInitialY(targetSlot.transform.position.y);
         gem.UpdateText();
 
-        Debug.Log($"color {gem.color} col {col_} initialY {targetSlot.transform.position.y}");
+        // Debug.Log($"color {gem.color} col {col_} initialY {targetSlot.transform.position.y}");
 
         gems.Add(gemGO);
     }
@@ -168,7 +168,7 @@ public class Board : MonoBehaviour
 
                 offset = currentRigidbody.position - touchStartPos;
 
-                Debug.Log($"Gem {clickedGem.name}");
+                // Debug.Log($"Gem {clickedGem.name}");
                 // Debug.Log($"Touch position: {convertedTouchPos} currentRigidbody position: {currentRigidbody.position} Offset: {offset}");
                 break;
 
@@ -263,7 +263,7 @@ public class Board : MonoBehaviour
 
     void GemSwap(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
-        Debug.Log($"::: GemSwap ::: Gem: {gem.GetComponent<Gem>().color} Other: {other.GetComponent<Gem>().color} Direction: {direction}");
+        // Debug.Log($"::: GemSwap ::: Gem: {gem.GetComponent<Gem>().color} Other: {other.GetComponent<Gem>().color} Direction: {direction}");
         Gem thisGem = gem.GetComponent<Gem>();
         Gem otherGem = other.GetComponent<Gem>();
 
@@ -398,19 +398,10 @@ public class Board : MonoBehaviour
             }
         }
 
-        if (gemsToRemove.Count > 0) Debug.Log("=========================================");
-
         gemsToRemove = gemsToRemove.Distinct().ToList();
 
-        string removeMsg = "";
-        foreach (Gem g in gemsToRemove)
-        {
-            removeMsg.Concat($"** Gem to remove ** {g.color} {g.row} {g.col} \n");
-        }
-        Debug.Log(removeMsg);
+        return new BoardResult(rowGems, colGems, gemsToRemove);
 
-        BoardResult result = new BoardResult(rowGems, colGems, gemsToRemove);
-        return result;
     }
 
     IEnumerator SpawnNewGems(BoardResult br)
@@ -418,7 +409,7 @@ public class Board : MonoBehaviour
         while (br.gemsToRemove.Count > 0)
         {
 
-            yield return new WaitForSeconds(0.1f);
+            // yield return new WaitForSeconds(0.1f);
 
             for (int i = 0; i < br.colGems.Count; i++)
             {
@@ -492,7 +483,7 @@ public class Board : MonoBehaviour
 
     IEnumerator GemSwapBack(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.6f);
 
         GemSwap(gem, gemIdx, other, otherIdx, direction);
         isLocked = false;
@@ -501,7 +492,7 @@ public class Board : MonoBehaviour
 
     bool CanSpawnGem(GemColor color)
     {
-        Debug.Log($"CanSpawnGem {_row} {_col} gems:{gems.Count}");
+        // Debug.Log($"CanSpawnGem {_row} {_col} gems:{gems.Count}");
 
         if (_col >= 2)
         {

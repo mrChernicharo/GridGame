@@ -135,7 +135,7 @@ public class Gem : MonoBehaviour
         float newYposition = -3.5f + Board.CELL_GAP * newRow;
 
 
-        Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");
+        // Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");
 
         row = newRow;
         yPosition = newYposition;
