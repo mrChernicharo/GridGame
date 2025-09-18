@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8821294886639902011}
   - component: {fileID: 7894408374874427209}
   - component: {fileID: 1605636137663354808}
-  - component: {fileID: 9148899895366474603}
   m_Layer: 0
   m_Name: Gem-Fucsia
   m_TagString: Untagged
@@ -133,33 +132,6 @@ CapsuleCollider:
   m_Height: 10.298627
   m_Direction: 1
   m_Center: {x: 0.0035231456, y: 2.5852835e-21, z: -0.000000085149495}
---- !u!54 &9148899895366474603
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 270026260875127615}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &584853723144064624
 GameObject:
   m_ObjectHideFlags: 0

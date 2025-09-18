@@ -59,7 +59,7 @@ public class Board : MonoBehaviour
     private int _row = 0;
 
     // drag ********************************************************
-    Rigidbody currentRigidbody = null;
+    Collider currentCollider = null;
     bool isLocked = false;
     bool isDragging = false;
     Vector3 offset = Vector3.zero;
@@ -153,27 +153,27 @@ public class Board : MonoBehaviour
                 RaycastHit hit;
                 if (!Physics.Raycast(ray, out hit)) return;
 
-                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                if (rb == null) return;
+                Collider collider = hit.transform.GetComponent<Collider>();
+                if (collider == null) return;
 
-                Gem clickedGem = rb.GetComponent<Gem>();
+                Gem clickedGem = collider.GetComponent<Gem>();
                 if (clickedGem.IsMoving()) return;
 
-                currentRigidbody = rb;
+                currentCollider = collider;
                 isDragging = true;
 
                 Vector3 touchStartPos = Camera.main.ScreenToWorldPoint(touch.position);
                 touchStartPos.z = 0;
 
-                offset = currentRigidbody.position - touchStartPos;
+                offset = clickedGem.transform.position - touchStartPos;
                 break;
 
             case TouchPhase.Moved:
-                if (!isDragging || isLocked || currentRigidbody == null) return;
+                if (!isDragging || isLocked || currentCollider == null) return;
 
-                Gem gem = currentRigidbody.GetComponent<Gem>();
+                Gem gem = currentCollider.GetComponent<Gem>();
 
-                Vector3 startPos = currentRigidbody.position + offset;
+                Vector3 startPos = gem.transform.position + offset;
                 Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
                 touchPos.z = 0;
 
@@ -184,7 +184,7 @@ public class Board : MonoBehaviour
 
                 // Reset everything
                 isDragging = false;
-                currentRigidbody = null;
+                currentCollider = null;
                 offset = Vector3.zero;
                 isLocked = true;
 
