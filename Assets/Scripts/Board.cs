@@ -66,7 +66,8 @@ public class Board : MonoBehaviour
     float dragTriggerDistance = 0.4f;
 
     // collections **************************************************
-    private List<List<GameObject>> board = new List<List<GameObject>>();
+    private GameObject[,] board;
+    // private List<List<GameObject>> board = new List<List<GameObject>>();
     private List<GameObject> spawnPoints = new List<GameObject>();
     private List<GameObject> gems = new List<GameObject>();
 
@@ -84,10 +85,10 @@ public class Board : MonoBehaviour
 
     void CreateBoard()
     {
+        board = new GameObject[rows, columns];
+
         for (int i = 0; i < rows; i++)
         {
-            List<GameObject> boardRow = new List<GameObject>();
-
             for (int j = 0; j < columns; j++)
             {
                 Vector3 pos = new Vector3(LEFT_MARGIN + j * CELL_GAP, TOP_MARGIN + i * CELL_GAP, 1);
@@ -102,9 +103,8 @@ public class Board : MonoBehaviour
 
                 GameObject slot = Instantiate(slotPrefab, pos, Quaternion.identity);
                 slot.name = $"{i}, {j}";
-                boardRow.Add(slot);
+                board[i, j] = slot;
             }
-            board.Add(boardRow);
         }
     }
 
@@ -131,13 +131,12 @@ public class Board : MonoBehaviour
         gem.row = row_;
         gem.col = col_;
 
-        GameObject targetSlot = board[gem.row][gem.col];
+        GameObject targetSlot = board[gem.row, gem.col];
 
         gem.SetInitialY(targetSlot.transform.position.y);
         gem.UpdateText();
 
         // Debug.Log($"color {gem.color} col {col_} initialY {targetSlot.transform.position.y}");
-
         gems.Add(gemGO);
     }
 
@@ -167,9 +166,6 @@ public class Board : MonoBehaviour
                 touchStartPos.z = 0;
 
                 offset = currentRigidbody.position - touchStartPos;
-
-                // Debug.Log($"Gem {clickedGem.name}");
-                // Debug.Log($"Touch position: {convertedTouchPos} currentRigidbody position: {currentRigidbody.position} Offset: {offset}");
                 break;
 
             case TouchPhase.Moved:
@@ -236,7 +232,6 @@ public class Board : MonoBehaviour
                 GemSwap(thisGem, gemIdx, otherGem, otherIdx, (Direction)dir);
 
                 BoardResult boardResult = CheckBoard();
-
 
                 // pluck gems to remove
                 if (boardResult.gemsToRemove.Count > 0)
