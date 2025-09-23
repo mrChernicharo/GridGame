@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5371f0bf89a8f44e78d8a1f450b72257, type: 3}
+  m_Name: Emerald Gem
+  m_EditorClassIdentifier: 
+  color: 1
+  explosionEffect: {fileID: 945039320894468918, guid: d85e42ff1bf964d58a8bdab701cef4cd, type: 3}
+  material: {fileID: 2100000, guid: 852b4015c9ed54f789365fa6652d1ce2, type: 2}

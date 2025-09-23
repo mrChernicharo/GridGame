@@ -42,23 +42,24 @@ public class ScreenManager : MonoBehaviour
             case "MainScreen":
                 GameObject startButtonGO = GameObject.FindGameObjectWithTag("Button.Start");
                 Button startButton = startButtonGO.GetComponent<Button>();
-
                 startButton.onClick.AddListener(OnStartButtonClick);
                 break;
             case "LevelSelectionScreen":
                 GameObject backButtonGO = GameObject.FindGameObjectWithTag("Button.Back");
                 GameObject levelButtonGO = GameObject.FindGameObjectWithTag("Button.Level");
+                GameObject level01ButtonGO = GameObject.FindGameObjectWithTag("Button.Level.01");
                 Button backButton = backButtonGO.GetComponent<Button>();
                 Button levelButton = levelButtonGO.GetComponent<Button>();
+                Button level01Button = level01ButtonGO.GetComponent<Button>();
 
                 backButton.onClick.AddListener(OnBackButtonClick);
-                levelButton.onClick.AddListener(OnSLevelButtonClick);
+                levelButton.onClick.AddListener(OnLevelButtonClick);
+                level01Button.onClick.AddListener(OnLevel01ButtonClick);
                 break;
-            case "LevelScreen":
-                GameObject backButtonGO2 = GameObject.FindGameObjectWithTag("Button.Back");
-                Button backButton2 = backButtonGO2.GetComponent<Button>();
-
-                backButton2.onClick.AddListener(OnBackButtonClick);
+            default:
+                GameObject backButtonGOD = GameObject.FindGameObjectWithTag("Button.Back");
+                Button backButtonD = backButtonGOD.GetComponent<Button>();
+                backButtonD.onClick.AddListener(OnBackButtonClick);
                 break;
         }
 
@@ -69,28 +70,32 @@ public class ScreenManager : MonoBehaviour
     private void OnBackButtonClick()
     {
         Debug.Log("OnBackButtonClick::");
-        if (SceneManager.GetActiveScene().name == "LevelScreen")
-        {
-            instance.LoadScreen("LevelSelectionScreen");
-        }
         if (SceneManager.GetActiveScene().name == "LevelSelectionScreen")
         {
             instance.LoadScreen("MainScreen");
         }
-
+        else
+        {
+            instance.LoadScreen("LevelSelectionScreen");
+        }
     }
 
-    private void OnSLevelButtonClick()
+    private void OnLevelButtonClick()
     {
         Debug.Log("OnSLevelButtonClick::");
         instance.LoadScreen("LevelScreen");
     }
-
+   private void OnLevel01ButtonClick()
+    {
+        instance.LoadScreen("Level-01");
+    }
     private void OnStartButtonClick()
     {
         Debug.Log("OnStartButtonClick::");
         instance.LoadScreen("LevelSelectionScreen");
     }
+
+ 
 
     public void LoadScreen(string screenName)
     {

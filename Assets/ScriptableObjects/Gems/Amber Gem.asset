@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5371f0bf89a8f44e78d8a1f450b72257, type: 3}
+  m_Name: Amber Gem
+  m_EditorClassIdentifier: 
+  color: 0
+  explosionEffect: {fileID: 5897272962906495582, guid: d6124ba75ae1345aeaf667a53e0a68ed, type: 3}
+  material: {fileID: 2100000, guid: bf1ca696a40b545f49c8fc00def190e1, type: 2}
