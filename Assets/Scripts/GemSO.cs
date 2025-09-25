@@ -7,5 +7,5 @@ public class GemSO : ScriptableObject
     public GameObject explosionEffect;
     public Material material;
     // public GameObject gameObject;
-    // public Sprite sprite;
+    public Sprite sprite;
 }

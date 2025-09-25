@@ -15,3 +15,4 @@ MonoBehaviour:
   color: 0
   explosionEffect: {fileID: 5897272962906495582, guid: d6124ba75ae1345aeaf667a53e0a68ed, type: 3}
   material: {fileID: 2100000, guid: bf1ca696a40b545f49c8fc00def190e1, type: 2}
+  sprite: {fileID: -690319319838926609, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}
