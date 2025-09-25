@@ -65,6 +65,8 @@ public class Gem : MonoBehaviour
             {
                 speed = 0f;
                 isInitializing = false;
+                Vector3 posCopy = gameObject.transform.position;
+                gameObject.transform.position = new Vector3(posCopy.x, yPosition, posCopy.z);
             }
             return;
         }
@@ -82,6 +84,8 @@ public class Gem : MonoBehaviour
             {
                 speed = 0f;
                 isFalling = false;
+                Vector3 posCopy = gameObject.transform.position;
+                gameObject.transform.position = new Vector3(posCopy.x, yPosition, posCopy.z);
 
                 if (pos.y < -4f)
                 {

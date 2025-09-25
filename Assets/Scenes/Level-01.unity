@@ -528,12 +528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gems:
-  - {fileID: 11400000, guid: f98b8fa115f0343ea80f4a52e6722a59, type: 2}
-  - {fileID: 11400000, guid: 7cf441d41665b49fe8bfa8b079aa7b87, type: 2}
-  - {fileID: 11400000, guid: 3995edbf9085a406a8183a4304f0ba17, type: 2}
-  - {fileID: 11400000, guid: 5655058e13293436bbc51e0442a14e74, type: 2}
-  - {fileID: 11400000, guid: 04d4d5f02b5894f54bc01279afbdcb78, type: 2}
-  - {fileID: 11400000, guid: 3342881be8d924b2db04c3e78ee31ba6, type: 2}
+  - {fileID: 4637882027439810093, guid: cdf374a94da58468da6f95cfd538f9b5, type: 3}
 --- !u!4 &437758028
 Transform:
   m_ObjectHideFlags: 0
