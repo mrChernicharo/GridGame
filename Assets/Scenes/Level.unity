@@ -702,7 +702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4392701f2c76345089ce6ae6f26ade0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelToLoad: {fileID: 11400000, guid: a3157ea5b82d741d9a23a882eb8bdda6, type: 2}
+  levelList: {fileID: 11400000, guid: 9d41ad31999c54cfaa5b60625205bad4, type: 2}
   levelTextMesh: {fileID: 5238268283371449559}
 --- !u!1 &850163661
 GameObject:

@@ -11,8 +11,9 @@ public class LevelLoader : MonoBehaviour
     {
 
         int playerLevel = GameData.LoadPlayerLevel();
+        int lvlIdx = playerLevel % levelList.levels.Length;
 
-        levelToLoad = levelList.levels[playerLevel];
+        levelToLoad = levelList.levels[lvlIdx];
 
         // Check if a level has been assigned
         if (levelToLoad != null)
