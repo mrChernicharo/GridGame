@@ -34,8 +34,7 @@ public class ScreenManager : MonoBehaviour
     {
 
         currentScene = SceneManager.GetActiveScene().name;
-
-        Debug.Log($"OnSceneLoaded ::: {currentScene}");
+        // Debug.Log($"OnSceneLoaded ::: {currentScene}");
 
         switch (currentScene)
         {
@@ -69,7 +68,7 @@ public class ScreenManager : MonoBehaviour
 
     private void OnBackButtonClick()
     {
-        Debug.Log("OnBackButtonClick::");
+        // Debug.Log("OnBackButtonClick::");
         if (SceneManager.GetActiveScene().name == "LevelSelectionScreen")
         {
             instance.LoadScreen("MainScreen");
@@ -82,20 +81,20 @@ public class ScreenManager : MonoBehaviour
 
     private void OnLevelButtonClick()
     {
-        Debug.Log("OnSLevelButtonClick::");
+        // Debug.Log("OnSLevelButtonClick::");
         instance.LoadScreen("LevelScreen");
     }
-   private void OnLevel01ButtonClick()
+    private void OnLevel01ButtonClick()
     {
-        instance.LoadScreen("Level-01");
+        instance.LoadScreen("Level");
     }
     private void OnStartButtonClick()
     {
-        Debug.Log("OnStartButtonClick::");
+        // Debug.Log("OnStartButtonClick::");
         instance.LoadScreen("LevelSelectionScreen");
     }
 
- 
+
 
     public void LoadScreen(string screenName)
     {

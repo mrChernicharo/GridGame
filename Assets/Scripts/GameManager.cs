@@ -4,10 +4,27 @@ public class GameManager : MonoBehaviour
 {
     public GemSpawner gemSpawner;
 
+    void Start()
+    {
+        int playerLevel = GameData.LoadPlayerLevel();
+        Debug.Log($"playerLevel {playerLevel}");
+    }
+
     void Update()
     {
         if (Input.touchCount == 0) return;
 
+        OnScreenTouch();
+    }
+
+    void OnDestroy()
+    {
+        Debug.Log($"RESET PLAYER LEVEL");
+        GameData._ResetPlayerLevel();
+    }
+
+    void OnScreenTouch()
+    {
         Touch touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Began)
         {

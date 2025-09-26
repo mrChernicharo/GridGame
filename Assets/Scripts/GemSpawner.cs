@@ -31,7 +31,7 @@ public class GemSpawner : MonoBehaviour
 
     public void SpawnGem(GemColor color, Vector3 position)
     {
-        Debug.Log($">>>> SpawnGem : {color} : {position}");
+        // Debug.Log($">>>> SpawnGem : {color} : {position}");
 
         Instantiate(gems[0], new Vector3(position.x, position.y, 1f), Quaternion.identity);
         // GemSO gemSO = null;

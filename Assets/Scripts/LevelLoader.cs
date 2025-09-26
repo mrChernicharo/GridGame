@@ -3,10 +3,17 @@ using TMPro;
 
 public class LevelLoader : MonoBehaviour
 {
-    [SerializeField] private LevelSO levelToLoad;
+    private LevelSO levelToLoad;
+
+    [SerializeField] private LevelListSO levelList;
     [SerializeField] private TextMeshProUGUI levelTextMesh;
     void Start()
     {
+
+        int playerLevel = GameData.LoadPlayerLevel();
+
+        levelToLoad = levelList.levels[playerLevel];
+
         // Check if a level has been assigned
         if (levelToLoad != null)
         {

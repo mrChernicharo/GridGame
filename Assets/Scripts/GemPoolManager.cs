@@ -65,7 +65,7 @@ public class GemPoolManager : MonoBehaviour
         {
             return pool.Get();
         }
-        
+
         Debug.LogError($"Pool for {color} not found!");
         return null;
     }
