@@ -3,11 +3,12 @@ using TMPro;
 
 public class LevelLoader : MonoBehaviour
 {
-    private LevelSO levelToLoad;
+    [HideInInspector]
+    public static LevelSO levelToLoad;
 
     [SerializeField] private LevelListSO levelList;
     [SerializeField] private TextMeshProUGUI levelTextMesh;
-    void Start()
+    void Awake()
     {
 
         int playerLevel = GameData.LoadPlayerLevel();

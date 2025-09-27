@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -29,12 +31,16 @@ public class GameManager : MonoBehaviour
         if (touch.phase == TouchPhase.Began)
         {
             // Vector2 pos = Input.GetTouch(0).position;
-            // Debug.Log(pos);
             // Debug.Log(Camera.main.ScreenToWorldPoint(pos));
+            var colors = Enum.GetValues(typeof(GemColor));
+            int randIdx = (int)UnityEngine.Random.Range(0f, colors.Length);
+
+            var color = (GemColor)colors.GetValue(randIdx);
+            Debug.Log($"{randIdx} :::: {color}");
 
             Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
             Vector2 pos = new Vector3(touchPos.x, touchPos.y, 2.0f);
-            gemSpawner.SpawnGem(GemColor.Amber, pos);
+            gemSpawner.SpawnGem(color, pos);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 [System.Serializable]
 public class GemPrefabEntry
 {
-    public GemColor color;
+    public GemColorOld color;
     public GameObject prefab;
     public int defaultPoolSize = 20;
     public int maxPoolSize = 50;
@@ -15,7 +15,7 @@ public class GemPrefabEntry
 public class GemPoolManager : MonoBehaviour
 {
     public List<GemPrefabEntry> gemPrefabEntries;
-    private Dictionary<GemColor, IObjectPool<GameObject>> gemPools;
+    private Dictionary<GemColorOld, IObjectPool<GameObject>> gemPools;
 
     // [SerializeField] private GameObject[] gemPrefabs;
     // public int defaultPoolSize = Board.rows * Board.columns;
@@ -25,7 +25,7 @@ public class GemPoolManager : MonoBehaviour
 
     void Awake()
     {
-        gemPools = new Dictionary<GemColor, IObjectPool<GameObject>>();
+        gemPools = new Dictionary<GemColorOld, IObjectPool<GameObject>>();
 
         foreach (var entry in gemPrefabEntries)
         {
@@ -59,7 +59,7 @@ public class GemPoolManager : MonoBehaviour
     }
 
     // Public method to get a gem of a specific color from the pool
-    public GameObject GetGem(GemColor color)
+    public GameObject GetGem(GemColorOld color)
     {
         if (gemPools.TryGetValue(color, out IObjectPool<GameObject> pool))
         {
@@ -71,7 +71,7 @@ public class GemPoolManager : MonoBehaviour
     }
 
     // Public method to return a gem to its specific pool
-    public void ReturnGemToPool(GameObject gem, GemColor color)
+    public void ReturnGemToPool(GameObject gem, GemColorOld color)
     {
         if (gemPools.TryGetValue(color, out IObjectPool<GameObject> pool))
         {

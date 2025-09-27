@@ -8,7 +8,7 @@ public class Gem : MonoBehaviour
     private float yPosition;
     private float speed = 0f;
 
-    public GemColor color;
+    public GemColorOld color;
     public int prefabIdx;
 
     public int row;
@@ -28,14 +28,14 @@ public class Gem : MonoBehaviour
     void Awake()
     {
         name = $"{name.Replace("(Clone)", "")}";
-        color = (GemColor)Enum.Parse(typeof(GemColor), name.Split("-")[1]);
+        color = (GemColorOld)Enum.Parse(typeof(GemColorOld), name.Split("-")[1]);
         prefabIdx = color switch
         {
-            GemColor.Emerald => 1,
-            GemColor.Fucsia => 2,
-            GemColor.Ruby => 3,
-            GemColor.Saphire => 4,
-            GemColor.Turquoise => 5,
+            GemColorOld.Emerald => 1,
+            GemColorOld.Fucsia => 2,
+            GemColorOld.Ruby => 3,
+            GemColorOld.Saphire => 4,
+            GemColorOld.Turquoise => 5,
             _ => 0,
         };
     }

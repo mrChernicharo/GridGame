@@ -10,7 +10,7 @@ enum Direction
     Up, Down, Left, Right
 }
 
-public enum GemColor
+public enum GemColorOld
 {
     Amber, Emerald, Fucsia, Ruby, Saphire, Turquoise,
 }
@@ -31,10 +31,10 @@ struct BoardResult
 
 struct GemColorAndPrefab
 {
-    public GemColor color;
+    public GemColorOld color;
     public GameObject prefab;
 
-    public GemColorAndPrefab(GameObject _prefab, GemColor _color)
+    public GemColorAndPrefab(GameObject _prefab, GemColorOld _color)
     {
         color = _color;
         prefab = _prefab;
@@ -116,7 +116,7 @@ public class Board : MonoBehaviour
         GameObject gemPrefab = gemPrefabs[RandPrefabIdx];
 
         string colorName = gemPrefab.GetComponent<Renderer>().sharedMaterial.name;
-        GemColor color = (GemColor)Enum.Parse(typeof(GemColor), colorName);
+        GemColorOld color = (GemColorOld)Enum.Parse(typeof(GemColorOld), colorName);
         // Debug.Log($"PickRandomGemColorAndPrefab ::: colorName: {color}");
 
         return new GemColorAndPrefab(gemPrefab, color);
@@ -486,7 +486,7 @@ public class Board : MonoBehaviour
 
     }
 
-    bool CanSpawnGem(GemColor color)
+    bool CanSpawnGem(GemColorOld color)
     {
         // Debug.Log($"CanSpawnGem {_row} {_col} gems:{gems.Count}");
 

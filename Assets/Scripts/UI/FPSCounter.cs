@@ -14,6 +14,8 @@ public class FPSCounter : MonoBehaviour
 
     void Update()
     {
+        if (fpsText == null) return;
+
         // 1. Accumulate time and frame count
         time += Time.unscaledDeltaTime;
         frameCount++;

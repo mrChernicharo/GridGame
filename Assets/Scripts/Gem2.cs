@@ -1,4 +1,10 @@
 using UnityEngine;
+
+public enum GemColor
+{
+    Amber, Emerald, Fucsia, Rainbow, Ruby, Saphire, Turquoise, White
+}
+
 public class Gem2 : MonoBehaviour
 {
     private float yTarget = -6f;
@@ -8,7 +14,7 @@ public class Gem2 : MonoBehaviour
 
     // *************
     private Vector3 destination;
-    [SerializeField] private GemSO gemSO;
+    public GemSO gemDetails;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float fallAcceleration;
     [SerializeField] private float maxSpeed;
@@ -71,7 +77,7 @@ public class Gem2 : MonoBehaviour
         return isMoving;
     }
 
-    public void SetInitialY(float y)
+    public void SetYTarget(float y)
     {
         yTarget = y;
     }

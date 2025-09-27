@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5371f0bf89a8f44e78d8a1f450b72257, type: 3}
   m_Name: Saphire Gem
   m_EditorClassIdentifier: 
-  color: 4
+  color: 5
   explosionEffect: {fileID: 8919747977466964624, guid: 214e293a407824410a25448c5ae88f71, type: 3}
-  material: {fileID: 2100000, guid: 3da6f9cea9dd747c7b226800a82834aa, type: 2}
   sprite: {fileID: 3892058407104242151, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}

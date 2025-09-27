@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5371f0bf89a8f44e78d8a1f450b72257, type: 3}
   m_Name: Ruby Gem
   m_EditorClassIdentifier: 
-  color: 3
+  color: 4
   explosionEffect: {fileID: 3412605677971524250, guid: 7c8f789c7750e4670a99e68ed5c93a2a, type: 3}
-  material: {fileID: 2100000, guid: 252fc0a5b174545b0b56336587d423d8, type: 2}
   sprite: {fileID: -6403193598388599868, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}
