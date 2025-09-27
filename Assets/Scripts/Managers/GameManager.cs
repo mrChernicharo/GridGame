@@ -53,24 +53,24 @@ public class GameManager : MonoBehaviour
         GameData._ResetPlayerLevel();
     }
 
-    void Update()
-    {
-        if (Input.touchCount == 0) return;
+    // void Update()
+    // {
+    //     if (Input.touchCount == 0) return;
 
-        OnScreenTouch();
-    }
+    //     OnScreenTouch();
+    // }
 
 
-    void OnScreenTouch()
-    {
-        Touch touch = Input.GetTouch(0);
-        if (touch.phase == TouchPhase.Began)
-        {
+    // void OnScreenTouch()
+    // {
+    //     Touch touch = Input.GetTouch(0);
+    //     if (touch.phase == TouchPhase.Began)
+    //     {
 
-            GemColor color = Helpers.GetRandomGemColor();
-            Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
-            Vector2 pos = new Vector3(touchPos.x, touchPos.y, 2.0f);
-            gemSpawner.SpawnGem(color, pos);
-        }
-    }
+    //         GemColor color = Helpers.GetRandomGemColor();
+    //         Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
+    //         Vector2 pos = new Vector3(touchPos.x, touchPos.y, 2.0f);
+    //         gemSpawner.SpawnGem(color, pos);
+    //     }
+    // }
 }

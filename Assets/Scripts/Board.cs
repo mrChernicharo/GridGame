@@ -5,11 +5,6 @@ using System.Linq;
 using UnityEngine;
 
 
-enum Direction
-{
-    Up, Down, Left, Right
-}
-
 public enum GemColorOld
 {
     Amber, Emerald, Fucsia, Ruby, Saphire, Turquoise,

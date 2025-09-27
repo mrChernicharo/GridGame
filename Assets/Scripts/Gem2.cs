@@ -1,10 +1,6 @@
 using System;
 using UnityEngine;
 
-public enum GemColor
-{
-    Amber, Emerald, Fucsia, Rainbow, Ruby, Saphire, Turquoise, White
-}
 
 public class Gem2 : MonoBehaviour
 {
@@ -31,7 +27,7 @@ public class Gem2 : MonoBehaviour
 
         GemPlacedEventArgs data = new GemPlacedEventArgs(gemDetails.color, gameObject.transform.position);
 
-        GemPlaced.Invoke(this, data);
+        GemPlaced.Invoke(this.gameObject, data);
     }
 
 

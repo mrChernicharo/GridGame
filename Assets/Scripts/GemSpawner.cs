@@ -39,7 +39,7 @@ public class GemSpawner : MonoBehaviour
             return;
         }
 
-        GameObject gemInstance = Instantiate(gem, new Vector3(spawnPosition.x, spawnPosition.y, 1f), Quaternion.identity);
+        GameObject gemInstance = Instantiate(gem, new Vector3(spawnPosition.x, spawnPosition.y, 1f), Quaternion.identity, this.transform);
         Gem2 gemBehavior = gemInstance.GetComponent<Gem2>();
         gemBehavior.SetYTarget(targetYPos);
     }
