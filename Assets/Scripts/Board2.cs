@@ -1,4 +1,7 @@
 using UnityEngine;
+using System.Collections;
+using System.Threading.Tasks;
+using System;
 
 public class Board2 : MonoBehaviour
 {
@@ -10,13 +13,29 @@ public class Board2 : MonoBehaviour
     [HideInInspector] public GameObject[] spawnPoints;
     [SerializeField] private GameObject tilePrefab;
 
-    void Start()
+    private void OnEnable()
+    {
+        Gem2.GemPlaced += OnGemPlaced;
+    }
+
+    private void OnDisable()
+    {
+        Gem2.GemPlaced -= OnGemPlaced;
+    }
+
+    private void OnGemPlaced(object sender, GemPlacedEventArgs ev)
+    {
+        Tile tile = GetTileFromPosition(ev.position);
+        Debug.Log($"**Board received 'GemPlaced' event!** color: {ev.color} position: {ev.position}, tile: {tile.row} {tile.col}");
+    }
+
+    public async Task InitializeBoard()
     {
         Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10f));
         Vector3 topRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 10f));
         // Debug.Log($"bottomLeft {bottomLeft} topRight {topRight} ::: cameraPos {Camera.main.transform.position}");
 
-        LevelSO levelSO = LevelLoader.levelToLoad;
+        LevelSO levelSO = LevelLoader.currentLevel;
         if (levelSO == null)
         {
             Debug.LogError("Board2 ::: failed to reference LevelSO out of LevelLoader.levelToLoad");
@@ -49,9 +68,30 @@ public class Board2 : MonoBehaviour
                     var spawnPos = new Vector3(pos.x, pos.y + 1f, 0);
                     spawnPoint.transform.position = spawnPos;
                     spawnPoint.transform.SetParent(this.transform);
+                    spawnPoints[j] = spawnPoint;
                 }
             }
         }
+
+        await Task.Delay(500);
+    }
+
+
+    public Tile GetTileFromPosition(Vector2 pos)
+    {
+        Tile selectedTile = null;
+        float minDist = float.PositiveInfinity;
+
+        foreach (Tile t in tiles)
+        {
+            float dist = Vector2.Distance(t.GetPosition(), pos);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                selectedTile = t;
+            }
+        }
+        return selectedTile;
     }
 
     public Tile GetTile(int row, int col)

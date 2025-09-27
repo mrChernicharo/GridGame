@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum GemColor
@@ -12,6 +13,10 @@ public class Gem2 : MonoBehaviour
     private bool isMoving = false;
     private bool isFalling = true;
 
+    // ************
+
+    public static event EventHandler<GemPlacedEventArgs> GemPlaced;
+
     // *************
     private Vector3 destination;
     public GemSO gemDetails;
@@ -19,6 +24,15 @@ public class Gem2 : MonoBehaviour
     [SerializeField] private float fallAcceleration;
     [SerializeField] private float maxSpeed;
 
+
+    protected virtual void OnGemPlaced()
+    {
+        if (GemPlaced == null) return;
+
+        GemPlacedEventArgs data = new GemPlacedEventArgs(gemDetails.color, gameObject.transform.position);
+
+        GemPlaced.Invoke(this, data);
+    }
 
 
     void OnBecameInvisible()
@@ -46,11 +60,7 @@ public class Gem2 : MonoBehaviour
                 isFalling = false;
                 Vector3 posCopy = gameObject.transform.position;
                 gameObject.transform.position = new Vector3(posCopy.x, yTarget, posCopy.z);
-
-                // if (pos.y < -4f)
-                // {
-                //     Debug.LogError($"Fall Error! pos.y: {pos.y} yPosition {yTarget}");
-                // }
+                OnGemPlaced();
             }
             return;
         }
@@ -66,6 +76,8 @@ public class Gem2 : MonoBehaviour
                 // Debug.Log("Done!");
                 isMoving = false;
                 destination = Vector3.zero;
+                OnGemPlaced();
+
             }
         }
 
@@ -100,6 +112,20 @@ public class Gem2 : MonoBehaviour
     }
 
 
+}
+
+
+
+public class GemPlacedEventArgs : System.EventArgs
+{
+    public GemColor color;
+    public Vector2 position;
+
+    public GemPlacedEventArgs(GemColor color, Vector2 position)
+    {
+        this.color = color;
+        this.position = position;
+    }
 }
 
 

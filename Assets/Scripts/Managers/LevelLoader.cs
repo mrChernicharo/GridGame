@@ -4,7 +4,7 @@ using TMPro;
 public class LevelLoader : MonoBehaviour
 {
     [HideInInspector]
-    public static LevelSO levelToLoad;
+    public static LevelSO currentLevel;
 
     [SerializeField] private LevelListSO levelList;
     [SerializeField] private TextMeshProUGUI levelTextMesh;
@@ -14,31 +14,19 @@ public class LevelLoader : MonoBehaviour
         int playerLevel = GameData.LoadPlayerLevel();
         int lvlIdx = playerLevel % levelList.levels.Length;
 
-        levelToLoad = levelList.levels[lvlIdx];
-
-        // Check if a level has been assigned
-        if (levelToLoad != null)
-        {
-            LoadLevel();
-        }
-        else
+        currentLevel = levelList.levels[lvlIdx];
+        if (currentLevel == null)
         {
             Debug.LogError("No Level Scriptable Object assigned to LevelLoader!");
+            return;
         }
-    }
 
-    void LoadLevel()
-    {
         // Access the data from the Scriptable Object
-        string levelName = levelToLoad.name;
-        int numRows = levelToLoad.rows;
-        int numCols = levelToLoad.columns;
+        int numRows = currentLevel.rows;
+        int numCols = currentLevel.columns;
 
         Debug.Log($"Loading level with {numRows} rows and {numCols} columns.");
-        levelTextMesh.text = levelName;
-
-        // Here's where you'd add your level generation logic.
-        // For example, you could instantiate a grid, position objects,
-        // or whatever your game needs.
+        levelTextMesh.text = currentLevel.name;
     }
+
 }

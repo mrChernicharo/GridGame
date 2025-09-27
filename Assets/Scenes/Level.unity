@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gemSpawner: {fileID: 437758027}
+  board: {fileID: 465525676}
 --- !u!1001 &241391108
 PrefabInstance:
   m_ObjectHideFlags: 0

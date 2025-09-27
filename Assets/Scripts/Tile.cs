@@ -8,10 +8,4 @@ public class Tile : MonoBehaviour
     {
         return (Vector2)transform.position;
     }
-
-    public void Start()
-    {
-        row = 0;
-        col = 0;
-    }
 }
