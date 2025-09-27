@@ -61,54 +61,20 @@ public class BoardInputManager : MonoBehaviour
                 float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
                 float angleDeg = angleRad * (180 / Mathf.PI);
 
-                // Debug.Log($"angle {angleDeg}");
-
-
-
                 Nullable<Direction> dir = null;
                 if (tile.row > 0 && angleDeg >= -135 && angleDeg < -45)
-                {
                     dir = Direction.Down;
-                }
                 else if (tile.col < board.cols - 1 && angleDeg >= -45 && angleDeg < 45)
-                {
                     dir = Direction.Right;
-                }
                 else if (tile.row < board.rows - 1 && angleDeg >= 45 && angleDeg < 135)
-                {
                     dir = Direction.Up;
-                }
                 else if (tile.col > 0 && angleDeg >= 135 || angleDeg < -135)
-                {
                     dir = Direction.Left;
-                }
-
                 if (dir == null) return;
+
 
                 // Debug.Log($"angle {angleDeg} -> Direction {dir}");
 
-                // int gemIdx = tile.row * board.cols + tile.col;
-                // int otherIdx = -1;
-                // switch (dir)
-                // {
-                //     case Direction.Up:
-                //         otherIdx = gemIdx + board.cols;
-                //         break;
-                //     case Direction.Right:
-                //         otherIdx = gemIdx + 1;
-                //         break;
-                //     case Direction.Down:
-                //         otherIdx = gemIdx - board.cols;
-                //         break;
-                //     case Direction.Left:
-                //         otherIdx = gemIdx - 1;
-                //         break;
-                // }
-
-                // GameObject thisGem = board.gems[gemIdx];
-                // GameObject otherGem = board.gems[otherIdx];
-
-                // GameObject thisGem = draggingGem.gameObject;
                 GameObject otherGemObj = dir switch
                 {
                     Direction.Up => board.gems[tile.row + 1, tile.col],
@@ -127,41 +93,19 @@ public class BoardInputManager : MonoBehaviour
                 };
                 Gem2 otherGem = otherGemObj.GetComponent<Gem2>();
 
+                // Swap Gems
                 draggingGem.Move(otherTile.GetPosition());
                 otherGem.Move(tile.GetPosition());
 
-                await Task.Delay(500);
-
-                isLocked = false;
-
-
-                // GemSwap(thisGem, gemIdx, otherGem, otherIdx, (Direction)dir);
-
-                // BoardResult boardResult = CheckBoard();
-
-                // // pluck gems to remove
-                // if (boardResult.gemsToRemove.Count > 0)
-                // {
-                //     StartCoroutine(SpawnNewGems(boardResult));
-                // }
-                // else
-                // {
-                //     var backDir = dir switch
-                //     {
-                //         Direction.Up => Direction.Down,
-                //         Direction.Right => Direction.Left,
-                //         Direction.Down => Direction.Up,
-                //         _ => Direction.Right,
-                //     };
-                //     // move gem back
-                //     StartCoroutine(GemSwapBack(thisGem, gemIdx, otherGem, otherIdx, backDir));
-                // }
-
-                break;
-            case TouchPhase.Ended:
                 isDragging = false;
                 currentCollider = null;
                 offset = Vector3.zero;
+
+                await Task.Delay(200);
+
+                isLocked = false;
+                break;
+            case TouchPhase.Ended:
                 break;
         }
     }
