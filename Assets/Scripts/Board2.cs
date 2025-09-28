@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
+using System.Text;
 
 public class Board2 : MonoBehaviour
 {
@@ -112,5 +113,32 @@ public class Board2 : MonoBehaviour
         int idx = UnityEngine.Random.Range(0, colors.Length);
 
         return (GemColor)colors.GetValue(idx);
+    }
+
+    public void LogGrid()
+    {
+        StringBuilder logBuilder = new StringBuilder();
+        logBuilder.AppendLine("--- Gem Grid Layout ---");
+        for (int r = rows - 1; r >= 0; r--)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                GameObject gem = gems[r, c];
+                string cellRepresentation;
+                if (gem != null)
+                {
+                    GemColor color = gem.GetComponent<Gem2>().gemDetails.color;
+                    cellRepresentation = color.ToString()[..3] + " ";
+                }
+                else
+                {
+                    cellRepresentation = "_ ";
+                }
+                logBuilder.Append(cellRepresentation);
+            }
+            logBuilder.AppendLine();
+        }
+        logBuilder.AppendLine("--- End of Grid ---");
+        Debug.Log(logBuilder.ToString());
     }
 }
