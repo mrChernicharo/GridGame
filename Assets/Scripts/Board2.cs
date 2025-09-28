@@ -7,7 +7,7 @@ public class Board2 : MonoBehaviour
 {
     public int rows;
     public int cols;
-    public float tileSize = 0.42f;
+    public static float tileSize = 0.42f;
 
     [HideInInspector] public Tile[,] tiles;
     [HideInInspector] public GameObject[,] gems;
@@ -31,7 +31,7 @@ public class Board2 : MonoBehaviour
         GameObject gem = sender as GameObject;
         gems[tile.row, tile.col] = gem;
 
-        Debug.Log($"**Board received 'GemPlaced' event!** color: {ev.color} position: {ev.position}, tile: {tile.row} {tile.col}, gemObj ::: {gem.name}");
+        // Debug.Log($"*** Board received 'GemPlaced' event! *** color: {ev.color} position: {ev.position}, tile: {tile.row} {tile.col}, gemObj ::: {gem.name}");
     }
 
     public async Task InitializeBoard()
@@ -106,4 +106,11 @@ public class Board2 : MonoBehaviour
         return tiles[row, col];
     }
 
+    public GemColor GetRandomGemColor()
+    {
+        var colors = Enum.GetValues(typeof(GemColor));
+        int idx = UnityEngine.Random.Range(0, colors.Length);
+
+        return (GemColor)colors.GetValue(idx);
+    }
 }

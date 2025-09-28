@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
         {
             foreach (Tile tile in board.tiles)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.01f);
                 // Debug.Log($"GameManager ::: RunGameStartSequence: {tile.row} {tile.col}");
 
                 GameObject spawnPoint = board.spawnPoints[tile.col];

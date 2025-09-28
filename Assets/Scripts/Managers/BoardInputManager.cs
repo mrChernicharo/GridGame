@@ -33,7 +33,6 @@ public class BoardInputManager : MonoBehaviour
         if (Input.touchCount <= 0) return;
 
         Touch touch = Input.GetTouch(0);
-
         // Debug.Log($"Touch {touch.position}");
 
         switch (touch.phase)
@@ -99,19 +98,11 @@ public class BoardInputManager : MonoBehaviour
                     Direction.Left => board.gems[tile.row, tile.col - 1],
                     _ => board.gems[tile.row, tile.col],
                 };
-                // Tile otherTile = dir switch
-                // {
-                //     Direction.Up => board.GetTile(tile.row + 1, tile.col),
-                //     Direction.Right => board.GetTile(tile.row, tile.col + 1),
-                //     Direction.Down => board.GetTile(tile.row - 1, tile.col),
-                //     Direction.Left => board.GetTile(tile.row, tile.col - 1),
-                //     _ => board.GetTile(tile.row, tile.col),
-                // };
-                // Tile otherTile = board.GetTileFromPosition(otherGemObj.transform.position);
+
                 otherGem = otherGemObj.GetComponent<Gem2>();
 
                 SwapGems(draggingGem, otherGem);
-                await Task.Delay(200);
+                // await Task.Delay(200);
 
                 isLocked = false;
                 break;
@@ -134,12 +125,12 @@ public class BoardInputManager : MonoBehaviour
     }
 
 
-
     protected virtual void OnMoveGemsBack(object sender, MoveGemsBackEventArgs ev)
     {
-        SwapGems(draggingGem, otherGem);
+        if (draggingGem && otherGem)
+            SwapGems(draggingGem, otherGem);
 
-        draggingGem = null;
-        otherGem = null;
+        // draggingGem = null;
+        // otherGem = null;
     }
 }

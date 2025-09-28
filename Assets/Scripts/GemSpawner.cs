@@ -12,6 +12,16 @@ public class GemSpawner : MonoBehaviour
     [SerializeField] private GameObject[] gems;
     [SerializeField] private Board2 board;
 
+    void OnEnable()
+    {
+        BoardChecker.SpawnGem += OnSpawnGem;
+    }
+
+    void OnDisable()
+    {
+        BoardChecker.SpawnGem -= OnSpawnGem;
+    }
+
     void Start()
     {
         // Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10f));
@@ -27,6 +37,11 @@ public class GemSpawner : MonoBehaviour
 
             gemDict.Add(gemDetails.color, gems[i]);
         }
+    }
+
+    protected virtual void OnSpawnGem(object sender, SpawnGemEventArgs ev)
+    {
+        SpawnGem(ev.color, ev.spawnPos, ev.targetYPos);
     }
 
     public void SpawnGem(GemColor color, Vector3 spawnPosition, float targetYPos = -6f)

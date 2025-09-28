@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -71,7 +72,6 @@ public class Gem2 : MonoBehaviour
                 isMoving = false;
                 destination = Vector3.zero;
                 OnGemPlaced();
-
             }
         }
 
@@ -95,13 +95,19 @@ public class Gem2 : MonoBehaviour
     }
 
     public void Explode()
+    // public async Task Explode()
     {
+        ParticleSystem explosion = gemDetails.explosionEffect.GetComponent<ParticleSystem>();
+        explosion.Play();
+
+        // await WaitForSeconds(0.1f);
+        // await Task.Delay(100);
         Destroy(gameObject);
     }
 
-    public void Fall(int newYPosition)
+    public void Fall(int fallCount)
     {
-        yTarget = newYPosition;
+        yTarget -= fallCount * Board2.tileSize;
         isFalling = true;
     }
 

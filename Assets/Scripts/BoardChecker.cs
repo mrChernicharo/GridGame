@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using System.Collections;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class BoardChecker : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class BoardChecker : MonoBehaviour
 
 
     public static event EventHandler<MoveGemsBackEventArgs> MoveGemsBack;
+    public static event EventHandler<SpawnGemEventArgs> SpawnGem;
 
 
     private float timeSinceGemPlaced = 0f;
@@ -31,9 +33,11 @@ public class BoardChecker : MonoBehaviour
     {
         timeSinceGemPlaced = 0f;
         shouldCheck = true;
+        Debug.Log($"BoardChecker ::::: OnGemPlaced {ev.color}");
+
     }
 
-    private List<Gem2> CheckBoard()
+    private BoardResult2 CheckBoard()
     {
         // Debug.Log("*** Check board now! ***");
         List<List<Gem2>> rowGems = new List<List<Gem2>>();
@@ -47,13 +51,18 @@ public class BoardChecker : MonoBehaviour
         // assign gems to rowGems / colGems
         int tempRow = 0;
         int tempCol = 0;
-        for (int i = 0; i < board.gems.Length; i++)
+        foreach (GameObject gGO in board.gems)
         {
-            Gem2 currGem = board.gems[tempRow, tempCol].GetComponent<Gem2>();
+            if (gGO != null)
+            {
 
-            rowGems[tempRow].Add(currGem);
-            colGems[tempCol].Add(currGem);
-            // Debug.Log($"i {i} tempRow {tempRow} tempCol {tempCol} color {currGem.color}");
+                // GameObject gGO = board.gems[tempRow, tempCol];
+                Gem2 currGem = gGO.GetComponent<Gem2>();
+
+                rowGems[tempRow].Add(currGem);
+                colGems[tempCol].Add(currGem);
+                // Debug.Log($"i {i} tempRow {tempRow} tempCol {tempCol} color {currGem.color}");
+            }
 
             int lastColIdx = board.cols - 1;
             if (tempCol >= lastColIdx)
@@ -147,55 +156,102 @@ public class BoardChecker : MonoBehaviour
 
         gemsToRemove = gemsToRemove.Distinct().ToList();
 
-        // Debug.Log($"****** gemsToRemove ***** {gemsToRemove.Count}");
-        // foreach (Gem2 g in gemsToRemove)
-        // {
-        //     Tile t = board.GetTileFromPosition(g.transform.position);
-        //     Debug.Log($"{g.gemDetails.color} {t.row} {t.col}");
-        // }
-
-        // return new BoardResult(rowGems, colGems, gemsToRemove);
-        return gemsToRemove;
+        return new BoardResult2(rowGems, colGems, gemsToRemove);
 
     }
 
-    async void Update()
+    void Update()
     {
         timeSinceGemPlaced += Time.deltaTime;
 
-        if (shouldCheck && timeSinceGemPlaced > timeToCheck)
-        {
-            shouldCheck = false;
-            List<Gem2> gemsToRemove = CheckBoard();
+        if (!shouldCheck || timeSinceGemPlaced <= timeToCheck) return;
+        shouldCheck = false;
 
-            if (gemsToRemove.Count == 0)
-            {
-                MoveGemsBack.Invoke(this, new MoveGemsBackEventArgs());
-            }
-            else { }
+
+
+        BoardResult2 br = CheckBoard();
+
+        if (br.gemsToRemove.Count == 0)
+        {
+            MoveGemsBack.Invoke(this, new MoveGemsBackEventArgs());
         }
+        else
+        {
+            WrangleGems(br);
+        }
+
     }
 
+    private void WrangleGems(BoardResult2 br)
+    {
+        Debug.Log($"BoardChecker ::::: WrangleBoard");
 
+        for (int i = 0; i < br.colGems.Count; i++)
+        {
+            int colDestroyCount = 0;
+            List<Gem2> gemsInCol = br.colGems[i];
 
+            for (int j = 0; j < gemsInCol.Count; j++)
+            {
+                Gem2 currGem = gemsInCol[j];
 
+                if (br.gemsToRemove.Contains(currGem))
+                {
+                    colDestroyCount++;
+                    currGem.Explode();
+                }
+                else
+                {
+                    if (colDestroyCount > 0)
+                        currGem.Fall(colDestroyCount);
+                }
 
+            }
+
+            while (colDestroyCount > 0)
+            {
+                colDestroyCount--;
+                int spawnRow = gemsInCol.Count - 1 - colDestroyCount;
+                GameObject spawnPoint = board.spawnPoints[i];
+                Tile targetTile = board.GetTile(spawnRow, i);
+                GemColor color = board.GetRandomGemColor();
+
+                SpawnGem.Invoke(this, new SpawnGemEventArgs(color, spawnPoint.transform.position, targetTile.GetPosition().y));
+
+            }
+
+        }
+    }
 }
 
 
 public class MoveGemsBackEventArgs : System.EventArgs
 {
-    // public Gem2 gem1;
-    // public Gem2 gem2;
-    // public Vector2 pos1;
-    // public Vector2 pos2;
-    // public MoveGemsBackEventArgs(Gem2 gem1, Gem2 gem2)
+}
 
-    public MoveGemsBackEventArgs()
+public class SpawnGemEventArgs : System.EventArgs
+{
+    public GemColor color;
+    public Vector3 spawnPos;
+    public float targetYPos;
+    public SpawnGemEventArgs(GemColor color, Vector3 spawnPos, float targetYPos)
     {
-        // this.pos1 = gem1.transform.position;
-        // this.pos2 = gem2.transform.position;
-        // this.gem1 = gem1;
-        // this.gem2 = gem2;
+        this.color = color;
+        this.spawnPos = spawnPos;
+        this.targetYPos = targetYPos;
+    }
+}
+
+struct BoardResult2
+{
+    public List<List<Gem2>> rowGems;
+    public List<List<Gem2>> colGems;
+    public List<Gem2> gemsToRemove;
+
+    public BoardResult2(List<List<Gem2>> rg, List<List<Gem2>> cg, List<Gem2> gtr)
+    {
+        rowGems = rg;
+        colGems = cg;
+        gemsToRemove = gtr;
     }
 }

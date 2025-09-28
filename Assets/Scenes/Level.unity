@@ -663,7 +663,7 @@ MonoBehaviour:
   - {fileID: 4394937087321921856, guid: 1a7cdae01e73f4c12aa7a4b3c2755764, type: 3}
   - {fileID: 8548798547539905702, guid: a7c05e18e81d34ca68c56d0c674184cc, type: 3}
   - {fileID: 400291987919602003, guid: bb3f6eba399824d14ab975cd2e95e0f8, type: 3}
-  board: {fileID: 0}
+  board: {fileID: 465525676}
 --- !u!4 &437758028
 Transform:
   m_ObjectHideFlags: 0
@@ -710,7 +710,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 0
   cols: 0
-  tileSize: 0.42
   spawnPoints: []
   tilePrefab: {fileID: 4393888916411130420, guid: 10d4f16ff422142d2b0f2e0dc0332c32, type: 3}
 --- !u!4 &465525677
