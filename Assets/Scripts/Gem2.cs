@@ -25,9 +25,7 @@ public class Gem2 : MonoBehaviour
     {
         if (GemPlaced == null) return;
 
-        GemPlacedEventArgs data = new GemPlacedEventArgs(gemDetails.color, gameObject.transform.position);
-
-        GemPlaced.Invoke(this.gameObject, data);
+        GemPlaced.Invoke(this.gameObject, new GemPlacedEventArgs(gemDetails.color, gameObject.transform.position));
     }
 
 

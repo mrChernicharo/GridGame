@@ -7,13 +7,26 @@ using UnityEngine;
 public class BoardInputManager : MonoBehaviour
 {
 
-    public bool isLocked = false;
-    public bool isDragging = false;
+    [HideInInspector] public bool isLocked = false;
+    [HideInInspector] public bool isDragging = false;
     private Vector3 offset = Vector3.zero;
     private BoxCollider2D currentCollider = null;
-    private float dragTriggerDistance = 0.25f;
+    private float dragTriggerDistance = 0.36f;
+
+    Gem2 draggingGem;
+    Gem2 otherGem;
 
     [SerializeField] Board2 board;
+
+    void OnEnable()
+    {
+        BoardChecker.MoveGemsBack += OnMoveGemsBack;
+    }
+
+    void OnDisable()
+    {
+        BoardChecker.MoveGemsBack -= OnMoveGemsBack;
+    }
 
     async void Update()
     {
@@ -48,7 +61,7 @@ public class BoardInputManager : MonoBehaviour
             case TouchPhase.Moved:
                 if (!isDragging || isLocked || currentCollider == null) return;
 
-                Gem2 draggingGem = currentCollider.GetComponent<Gem2>();
+                draggingGem = currentCollider.GetComponent<Gem2>();
                 Tile tile = board.GetTileFromPosition(draggingGem.transform.position);
 
                 Vector3 startPos = draggingGem.transform.position + offset;
@@ -56,7 +69,11 @@ public class BoardInputManager : MonoBehaviour
 
 
                 if (Vector2.Distance(startPos, touchPos) <= dragTriggerDistance) return;
+
                 isLocked = true;
+                isDragging = false;
+                currentCollider = null;
+                offset = Vector3.zero;
 
                 float angleRad = Mathf.Atan2(touchPos.y - startPos.y, touchPos.x - startPos.x);
                 float angleDeg = angleRad * (180 / Mathf.PI);
@@ -72,7 +89,6 @@ public class BoardInputManager : MonoBehaviour
                     dir = Direction.Left;
                 if (dir == null) return;
 
-
                 // Debug.Log($"angle {angleDeg} -> Direction {dir}");
 
                 GameObject otherGemObj = dir switch
@@ -83,30 +99,47 @@ public class BoardInputManager : MonoBehaviour
                     Direction.Left => board.gems[tile.row, tile.col - 1],
                     _ => board.gems[tile.row, tile.col],
                 };
-                Tile otherTile = dir switch
-                {
-                    Direction.Up => board.GetTile(tile.row + 1, tile.col),
-                    Direction.Right => board.GetTile(tile.row, tile.col + 1),
-                    Direction.Down => board.GetTile(tile.row - 1, tile.col),
-                    Direction.Left => board.GetTile(tile.row, tile.col - 1),
-                    _ => board.GetTile(tile.row, tile.col),
-                };
-                Gem2 otherGem = otherGemObj.GetComponent<Gem2>();
+                // Tile otherTile = dir switch
+                // {
+                //     Direction.Up => board.GetTile(tile.row + 1, tile.col),
+                //     Direction.Right => board.GetTile(tile.row, tile.col + 1),
+                //     Direction.Down => board.GetTile(tile.row - 1, tile.col),
+                //     Direction.Left => board.GetTile(tile.row, tile.col - 1),
+                //     _ => board.GetTile(tile.row, tile.col),
+                // };
+                // Tile otherTile = board.GetTileFromPosition(otherGemObj.transform.position);
+                otherGem = otherGemObj.GetComponent<Gem2>();
 
-                // Swap Gems
-                draggingGem.Move(otherTile.GetPosition());
-                otherGem.Move(tile.GetPosition());
-
-                isDragging = false;
-                currentCollider = null;
-                offset = Vector3.zero;
-
+                SwapGems(draggingGem, otherGem);
                 await Task.Delay(200);
 
                 isLocked = false;
                 break;
             case TouchPhase.Ended:
+                isDragging = false;
+                currentCollider = null;
+                offset = Vector3.zero;
                 break;
         }
+    }
+
+
+    void SwapGems(Gem2 gem1, Gem2 gem2)
+    {
+        Vector2 pos1 = gem1.transform.position;
+        Vector2 pos2 = gem2.transform.position;
+        gem1.Move(pos2);
+        gem2.Move(pos1);
+
+    }
+
+
+
+    protected virtual void OnMoveGemsBack(object sender, MoveGemsBackEventArgs ev)
+    {
+        SwapGems(draggingGem, otherGem);
+
+        draggingGem = null;
+        otherGem = null;
     }
 }
