@@ -168,23 +168,22 @@ public class BoardChecker : MonoBehaviour
         shouldCheck = false;
 
 
+        Debug.Log($"BoardChecker ::::: WrangleBoard");
 
         BoardResult2 br = CheckBoard();
-
         if (br.gemsToRemove.Count == 0)
         {
             MoveGemsBack.Invoke(this, new MoveGemsBackEventArgs());
+            return;
         }
-        else
-        {
-            WrangleGems(br);
-        }
+
+        WrangleGems(br);
 
     }
 
     private void WrangleGems(BoardResult2 br)
     {
-        Debug.Log($"BoardChecker ::::: WrangleBoard");
+
 
         for (int i = 0; i < br.colGems.Count; i++)
         {
