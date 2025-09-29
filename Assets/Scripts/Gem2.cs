@@ -22,7 +22,7 @@ public class Gem2 : MonoBehaviour
     [SerializeField] private float maxSpeed;
 
 
-    protected virtual void OnGemPlaced()
+    private void OnGemPlaced()
     {
         if (GemPlaced == null) return;
 
@@ -38,42 +38,50 @@ public class Gem2 : MonoBehaviour
     void Update()
     {
 
-        Vector3 pos = gameObject.transform.position;
+        Vector3 posCopy = gameObject.transform.position;
 
         if (isFalling)
         {
-            if (pos.y > yTarget)
+            if (posCopy.y > yTarget)
             {
 
+                Vector3 targetPos = new Vector3(posCopy.x, yTarget, posCopy.z);
                 speed += fallAcceleration * Time.deltaTime;
-                pos.y -= Mathf.Min(speed, maxSpeed);
-                gameObject.transform.position = pos;
+                float moveSpeed = Mathf.Min(speed, maxSpeed);
+                gameObject.transform.position = Vector3.MoveTowards(posCopy, targetPos, moveSpeed); ;
             }
             else
             {
                 speed = 0f;
                 isFalling = false;
-                Vector3 posCopy = gameObject.transform.position;
                 gameObject.transform.position = new Vector3(posCopy.x, yTarget, posCopy.z);
                 OnGemPlaced();
             }
             return;
         }
 
-        if (isMoving)
+        else if (isMoving)
         {
-            if (Vector3.Distance(gameObject.transform.position, destination) > 0.001f)
+            if (Vector3.Distance(posCopy, destination) > 0.005f)
             {
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
+                gameObject.transform.position = Vector3.MoveTowards(posCopy, destination, moveSpeed * Time.deltaTime);
             }
             else
             {
                 // Debug.Log("Done!");
+                gameObject.transform.position = destination;
                 isMoving = false;
                 destination = Vector3.zero;
                 OnGemPlaced();
+
             }
         }
+
+        // else if (yTarget != posCopy.y)
+        // {
+        //     Debug.Log("Adjust ypos and yTarget together");
+        //     gameObject.transform.position = new Vector3(posCopy.x, yTarget, posCopy.z);
+        // }
 
     }
 
@@ -95,19 +103,20 @@ public class Gem2 : MonoBehaviour
     }
 
     public void Explode()
-    // public async Task Explode()
     {
         ParticleSystem explosion = gemDetails.explosionEffect.GetComponent<ParticleSystem>();
         explosion.Play();
 
-        // await WaitForSeconds(0.1f);
-        // await Task.Delay(100);
         Destroy(gameObject);
     }
 
     public void Fall(int fallCount)
     {
-        yTarget -= fallCount * Board2.tileSize;
+        float currYPos = gameObject.transform.position.y;
+        float newYTarget = currYPos - fallCount * Board2.tileSize;
+
+        Debug.Log($"curr yTarget {yTarget} curr yPos {currYPos} newYTarget {newYTarget}");
+        SetYTarget(newYTarget);
         isFalling = true;
     }
 

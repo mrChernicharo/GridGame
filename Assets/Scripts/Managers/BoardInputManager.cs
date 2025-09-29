@@ -7,14 +7,17 @@ using UnityEngine;
 public class BoardInputManager : MonoBehaviour
 {
 
-    [HideInInspector] public bool isLocked = false;
-    [HideInInspector] public bool isDragging = false;
+    public bool isDragging = false;
     private Vector3 offset = Vector3.zero;
     private BoxCollider2D currentCollider = null;
     private float dragTriggerDistance = 0.36f;
 
     Gem2 draggingGem;
     Gem2 otherGem;
+
+    public static event EventHandler<EvaluateBoardEventArgs> evaluateBoard;
+
+
 
     [SerializeField] Board2 board;
 
@@ -47,7 +50,7 @@ public class BoardInputManager : MonoBehaviour
                 BoxCollider2D collider = hit.collider.GetComponent<BoxCollider2D>();
                 if (collider == null) return;
 
-                Debug.Log($"Hit Gem: {collider.name} at position {worldPoint}");
+                // Debug.Log($"Hit Gem: {collider.name} at position {worldPoint}");
 
                 Gem2 clickedGem = collider.GetComponent<Gem2>();
                 if (clickedGem.IsMoving()) return;
@@ -58,7 +61,7 @@ public class BoardInputManager : MonoBehaviour
 
                 break;
             case TouchPhase.Moved:
-                if (!isDragging || isLocked || currentCollider == null) return;
+                if (board.isLocked || currentCollider == null || !isDragging) return;
 
                 draggingGem = currentCollider.GetComponent<Gem2>();
                 Tile tile = board.GetTileFromPosition(draggingGem.transform.position);
@@ -68,8 +71,7 @@ public class BoardInputManager : MonoBehaviour
 
 
                 if (Vector2.Distance(startPos, touchPos) <= dragTriggerDistance) return;
-
-                isLocked = true;
+                board.isLocked = true;
                 isDragging = false;
                 currentCollider = null;
                 offset = Vector3.zero;
@@ -86,10 +88,13 @@ public class BoardInputManager : MonoBehaviour
                     dir = Direction.Up;
                 else if (tile.col > 0 && angleDeg >= 135 || angleDeg < -135)
                     dir = Direction.Left;
-                if (dir == null) return;
 
+                if (dir == null)
+                {
+                    board.isLocked = false;
+                    return;
+                }
                 // Debug.Log($"angle {angleDeg} -> Direction {dir}");
-
                 GameObject otherGemObj = dir switch
                 {
                     Direction.Up => board.gems[tile.row + 1, tile.col],
@@ -98,13 +103,13 @@ public class BoardInputManager : MonoBehaviour
                     Direction.Left => board.gems[tile.row, tile.col - 1],
                     _ => board.gems[tile.row, tile.col],
                 };
-
                 otherGem = otherGemObj.GetComponent<Gem2>();
 
                 SwapGems(draggingGem, otherGem);
-                // await Task.Delay(200);
 
-                isLocked = false;
+                await Task.Delay(400);
+                evaluateBoard.Invoke(this, new EvaluateBoardEventArgs());
+
                 break;
             case TouchPhase.Ended:
                 isDragging = false;
@@ -125,12 +130,24 @@ public class BoardInputManager : MonoBehaviour
     }
 
 
-    protected virtual void OnMoveGemsBack(object sender, MoveGemsBackEventArgs ev)
+    private async void OnMoveGemsBack(object sender, MoveGemsBackEventArgs ev)
     {
         if (draggingGem && otherGem)
-            SwapGems(draggingGem, otherGem);
+        {
+            Vector3 pos1 = draggingGem.transform.position;
+            Vector3 pos2 = otherGem.transform.position;
 
+            await Task.Delay(200);
+
+            draggingGem.Move(pos2);
+            otherGem.Move(pos1);
+        }
         // draggingGem = null;
         // otherGem = null;
     }
+}
+
+public class EvaluateBoardEventArgs : System.EventArgs
+{
+
 }

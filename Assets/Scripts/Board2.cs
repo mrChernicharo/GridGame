@@ -9,6 +9,7 @@ public class Board2 : MonoBehaviour
     public int rows;
     public int cols;
     public static float tileSize = 0.42f;
+    public bool isLocked = false;
 
     [HideInInspector] public Tile[,] tiles;
     [HideInInspector] public GameObject[,] gems;

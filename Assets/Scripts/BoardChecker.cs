@@ -15,26 +15,41 @@ public class BoardChecker : MonoBehaviour
     public static event EventHandler<SpawnGemEventArgs> SpawnGem;
 
 
-    private float timeSinceGemPlaced = 0f;
-    private bool shouldCheck = false;
-
 
     private void OnEnable()
     {
-        Gem2.GemPlaced += OnGemPlaced;
+        BoardInputManager.evaluateBoard += OnEvaluateBoard;
     }
 
     private void OnDisable()
     {
-        Gem2.GemPlaced -= OnGemPlaced;
+        BoardInputManager.evaluateBoard -= OnEvaluateBoard;
     }
 
     private void OnGemPlaced(object sender, GemPlacedEventArgs ev)
     {
-        timeSinceGemPlaced = 0f;
-        shouldCheck = true;
         Debug.Log($"BoardChecker ::::: OnGemPlaced {ev.color}");
 
+    }
+
+    private async void OnEvaluateBoard(object sender, EvaluateBoardEventArgs ev)
+    {
+        // Debug.Log($"BoardChecker ::::: OnEvaluateBoard");
+        board.LogGrid();
+
+
+        BoardResult2 br = CheckBoard();
+        if (br.gemsToRemove.Count == 0)
+        {
+            MoveGemsBack.Invoke(this, new MoveGemsBackEventArgs());
+        }
+        else
+        {
+            WrangleGems(br);
+        }
+
+        await Task.Delay(200);
+        board.isLocked = false;
     }
 
     private BoardResult2 CheckBoard()
@@ -160,31 +175,9 @@ public class BoardChecker : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        timeSinceGemPlaced += Time.deltaTime;
-
-        if (!shouldCheck || timeSinceGemPlaced <= timeToCheck) return;
-        shouldCheck = false;
-
-
-        Debug.Log($"BoardChecker ::::: WrangleBoard");
-
-        BoardResult2 br = CheckBoard();
-        if (br.gemsToRemove.Count == 0)
-        {
-            MoveGemsBack.Invoke(this, new MoveGemsBackEventArgs());
-            return;
-        }
-
-        WrangleGems(br);
-
-    }
 
     private void WrangleGems(BoardResult2 br)
     {
-
-
         for (int i = 0; i < br.colGems.Count; i++)
         {
             int colDestroyCount = 0;
@@ -196,13 +189,18 @@ public class BoardChecker : MonoBehaviour
 
                 if (br.gemsToRemove.Contains(currGem))
                 {
+                    br.gemsToRemove.Remove(currGem);
                     colDestroyCount++;
                     currGem.Explode();
                 }
                 else
                 {
                     if (colDestroyCount > 0)
+                    {
+                        Tile tile = board.GetTileFromPosition(currGem.transform.position);
+                        Debug.Log($"currGem {currGem.gemDetails.color} in tile {tile.row} {tile.col} should fall {colDestroyCount} squares");
                         currGem.Fall(colDestroyCount);
+                    }
                 }
 
             }
@@ -220,6 +218,7 @@ public class BoardChecker : MonoBehaviour
             }
 
         }
+
     }
 }
 
@@ -241,6 +240,7 @@ public class SpawnGemEventArgs : System.EventArgs
     }
 }
 
+
 struct BoardResult2
 {
     public List<List<Gem2>> rowGems;
@@ -254,3 +254,4 @@ struct BoardResult2
         gemsToRemove = gtr;
     }
 }
+
