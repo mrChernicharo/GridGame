@@ -45,10 +45,9 @@ public class BoardChecker : MonoBehaviour
         }
         else
         {
-            WrangleGems(br);
+            await WrangleGems(br);
         }
 
-        Task.Delay(200);
         board.isLocked = false;
     }
 
@@ -176,7 +175,7 @@ public class BoardChecker : MonoBehaviour
     }
 
 
-    private async void WrangleGems(BoardResult2 br)
+    private async Task WrangleGems(BoardResult2 br)
     {
         for (int i = 0; i < br.colGems.Count; i++)
         {
@@ -191,7 +190,7 @@ public class BoardChecker : MonoBehaviour
                 {
                     br.gemsToRemove.Remove(currGem);
                     colDestroyCount++;
-                    // await Task.Delay(0);
+                    await Task.Delay(20);
                     currGem.Explode();
                 }
                 else
@@ -200,7 +199,7 @@ public class BoardChecker : MonoBehaviour
                     {
                         Tile tile = board.GetTileFromPosition(currGem.transform.position);
                         Debug.Log($"currGem {currGem.gemDetails.color} in tile {tile.row} {tile.col} should fall {colDestroyCount} squares");
-                        // await Task.Delay(0);
+                        await Task.Delay(20);
                         currGem.Fall(colDestroyCount);
                     }
                 }
@@ -214,16 +213,21 @@ public class BoardChecker : MonoBehaviour
                 GameObject spawnPoint = board.spawnPoints[i];
                 Tile targetTile = board.GetTile(spawnRow, i);
                 GemColor color = board.GetRandomGemColor();
-                // await Task.Delay(0);
+                await Task.Delay(20);
                 SpawnGem.Invoke(this, new SpawnGemEventArgs(color, spawnPoint.transform.position, targetTile.GetPosition().y));
 
             }
 
         }
 
+        await Task.Delay(600);
 
         BoardResult2 br2 = CheckBoard();
         Debug.Log($"gems to remove:: {br2.gemsToRemove.Count}");
+        if (br2.gemsToRemove.Count > 0)
+        {
+            await WrangleGems(br2);
+        }
     }
 }
 
