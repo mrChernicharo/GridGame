@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Turquoise Gem
   m_EditorClassIdentifier: 
   color: 6
-  explosionEffect: {fileID: 3105562973509253743, guid: 1197e89cbd1974e05b2a8ff51dfda13d, type: 3}
+  explosionEffect: {fileID: 8803412362672526723, guid: c57fe28f162f34524ad2e3f500d0cf29, type: 3}
   sprite: {fileID: -8757656990346593789, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}

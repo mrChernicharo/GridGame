@@ -104,8 +104,8 @@ public class Gem2 : MonoBehaviour
 
     public void Explode()
     {
-        ParticleSystem explosion = gemDetails.explosionEffect.GetComponent<ParticleSystem>();
-        explosion.Play();
+        GameObject explosion = Instantiate(gemDetails.explosionEffect, transform.position, Quaternion.identity);
+        explosion.GetComponent<ParticleSystem>().Play();
 
         Destroy(gameObject);
     }
@@ -115,7 +115,7 @@ public class Gem2 : MonoBehaviour
         float currYPos = gameObject.transform.position.y;
         float newYTarget = currYPos - fallCount * Board2.tileSize;
 
-        Debug.Log($"curr yTarget {yTarget} curr yPos {currYPos} newYTarget {newYTarget}");
+        // Debug.Log($"curr yTarget {yTarget} curr yPos {currYPos} newYTarget {newYTarget}");
         SetYTarget(newYTarget);
         isFalling = true;
     }

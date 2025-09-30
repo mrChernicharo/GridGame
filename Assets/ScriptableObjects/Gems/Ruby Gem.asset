@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ruby Gem
   m_EditorClassIdentifier: 
   color: 4
-  explosionEffect: {fileID: 3412605677971524250, guid: 7c8f789c7750e4670a99e68ed5c93a2a, type: 3}
+  explosionEffect: {fileID: 8803412362672526723, guid: c57fe28f162f34524ad2e3f500d0cf29, type: 3}
   sprite: {fileID: -6403193598388599868, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}

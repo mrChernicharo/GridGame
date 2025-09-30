@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: White Gem
   m_EditorClassIdentifier: 
   color: 7
-  explosionEffect: {fileID: 3412605677971524250, guid: b110cf440ec8347e0bd00df09a7e7b42, type: 3}
+  explosionEffect: {fileID: 8803412362672526723, guid: c57fe28f162f34524ad2e3f500d0cf29, type: 3}
   sprite: {fileID: -2027444567505897547, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}

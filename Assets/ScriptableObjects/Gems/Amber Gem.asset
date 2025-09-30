@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Amber Gem
   m_EditorClassIdentifier: 
   color: 0
-  explosionEffect: {fileID: 5897272962906495582, guid: d6124ba75ae1345aeaf667a53e0a68ed, type: 3}
-  material: {fileID: 2100000, guid: bf1ca696a40b545f49c8fc00def190e1, type: 2}
+  explosionEffect: {fileID: 8803412362672526723, guid: c57fe28f162f34524ad2e3f500d0cf29, type: 3}
   sprite: {fileID: -690319319838926609, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}

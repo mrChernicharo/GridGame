@@ -357,7 +357,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076cf339b2bf749e7ad351cc81048242, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocked: 0
   isDragging: 0
   board: {fileID: 465525676}
 --- !u!4 &283027580
@@ -710,6 +709,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 0
   cols: 0
+  isLocked: 0
   spawnPoints: []
   tilePrefab: {fileID: 4393888916411130420, guid: 10d4f16ff422142d2b0f2e0dc0332c32, type: 3}
 --- !u!4 &465525677

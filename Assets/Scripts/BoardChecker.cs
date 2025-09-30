@@ -48,7 +48,7 @@ public class BoardChecker : MonoBehaviour
             WrangleGems(br);
         }
 
-        await Task.Delay(200);
+        Task.Delay(200);
         board.isLocked = false;
     }
 
@@ -176,7 +176,7 @@ public class BoardChecker : MonoBehaviour
     }
 
 
-    private void WrangleGems(BoardResult2 br)
+    private async void WrangleGems(BoardResult2 br)
     {
         for (int i = 0; i < br.colGems.Count; i++)
         {
@@ -191,6 +191,7 @@ public class BoardChecker : MonoBehaviour
                 {
                     br.gemsToRemove.Remove(currGem);
                     colDestroyCount++;
+                    // await Task.Delay(0);
                     currGem.Explode();
                 }
                 else
@@ -199,6 +200,7 @@ public class BoardChecker : MonoBehaviour
                     {
                         Tile tile = board.GetTileFromPosition(currGem.transform.position);
                         Debug.Log($"currGem {currGem.gemDetails.color} in tile {tile.row} {tile.col} should fall {colDestroyCount} squares");
+                        // await Task.Delay(0);
                         currGem.Fall(colDestroyCount);
                     }
                 }
@@ -212,13 +214,16 @@ public class BoardChecker : MonoBehaviour
                 GameObject spawnPoint = board.spawnPoints[i];
                 Tile targetTile = board.GetTile(spawnRow, i);
                 GemColor color = board.GetRandomGemColor();
-
+                // await Task.Delay(0);
                 SpawnGem.Invoke(this, new SpawnGemEventArgs(color, spawnPoint.transform.position, targetTile.GetPosition().y));
 
             }
 
         }
 
+
+        BoardResult2 br2 = CheckBoard();
+        Debug.Log($"gems to remove:: {br2.gemsToRemove.Count}");
     }
 }
 

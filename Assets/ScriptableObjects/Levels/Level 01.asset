@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Level 01
   m_EditorClassIdentifier: 
   name: Level 01
-  rows: 6
+  rows: 7
   columns: 7

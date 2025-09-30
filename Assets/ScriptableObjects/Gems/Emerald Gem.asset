@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Emerald Gem
   m_EditorClassIdentifier: 
   color: 1
-  explosionEffect: {fileID: 945039320894468918, guid: d85e42ff1bf964d58a8bdab701cef4cd, type: 3}
-  material: {fileID: 2100000, guid: 852b4015c9ed54f789365fa6652d1ce2, type: 2}
+  explosionEffect: {fileID: 8803412362672526723, guid: c57fe28f162f34524ad2e3f500d0cf29, type: 3}
   sprite: {fileID: -2366026356742224441, guid: e55cb9d07e864452da5510d1b03f05a5, type: 3}
