@@ -177,6 +177,11 @@ public class BoardChecker : MonoBehaviour
 
     private async Task WrangleGems(BoardResult2 br)
     {
+
+        List<Gem2> removing = new();
+        List<FallingGem> falling = new();
+        List<SpawningGem> spawning = new();
+
         for (int i = 0; i < br.colGems.Count; i++)
         {
             int colDestroyCount = 0;
@@ -190,17 +195,15 @@ public class BoardChecker : MonoBehaviour
                 {
                     br.gemsToRemove.Remove(currGem);
                     colDestroyCount++;
-                    await Task.Delay(20);
-                    currGem.Explode();
+                    // await Task.Delay(20);
+                    // currGem.Explode();
+                    removing.Add(currGem);
                 }
                 else
                 {
                     if (colDestroyCount > 0)
                     {
-                        Tile tile = board.GetTileFromPosition(currGem.transform.position);
-                        Debug.Log($"currGem {currGem.gemDetails.color} in tile {tile.row} {tile.col} should fall {colDestroyCount} squares");
-                        await Task.Delay(20);
-                        currGem.Fall(colDestroyCount);
+                        falling.Add(new FallingGem(currGem, colDestroyCount));
                     }
                 }
 
@@ -212,20 +215,39 @@ public class BoardChecker : MonoBehaviour
                 int spawnRow = gemsInCol.Count - 1 - colDestroyCount;
                 GameObject spawnPoint = board.spawnPoints[i];
                 Tile targetTile = board.GetTile(spawnRow, i);
-                GemColor color = board.GetRandomGemColor();
-                await Task.Delay(20);
-                SpawnGem.Invoke(this, new SpawnGemEventArgs(color, spawnPoint.transform.position, targetTile.GetPosition().y));
-
+                spawning.Add(new SpawningGem(spawnPoint.transform.position, targetTile.GetPosition().y));
             }
-
         }
 
-        await Task.Delay(600);
+
+
+        foreach (Gem2 gem in removing)
+        {
+            await Task.Delay(30);
+            gem.Explode();
+        }
+        await Task.Delay(200);
+
+
+        foreach (FallingGem fg in falling)
+        {
+            await Task.Delay(30);
+            fg.gem.Fall(fg.fallCount);
+        }
+        await Task.Delay(200);
+
+        foreach (SpawningGem sg in spawning)
+        {
+            await Task.Delay(30);
+            GemColor color = board.GetRandomGemColor();
+            SpawnGem.Invoke(this, new SpawnGemEventArgs(color, sg.spawnPos, sg.targetYPos));
+        }
+        await Task.Delay(800);
 
         BoardResult2 br2 = CheckBoard();
-        Debug.Log($"gems to remove:: {br2.gemsToRemove.Count}");
         if (br2.gemsToRemove.Count > 0)
         {
+            Debug.Log($"gems to remove:: {br2.gemsToRemove.Count}");
             await WrangleGems(br2);
         }
     }
@@ -264,3 +286,26 @@ struct BoardResult2
     }
 }
 
+
+struct FallingGem
+{
+    public FallingGem(Gem2 gem, int fallCount)
+    {
+        this.gem = gem;
+        this.fallCount = fallCount;
+    }
+
+    public Gem2 gem;
+    public int fallCount;
+}
+
+struct SpawningGem
+{
+    public SpawningGem(Vector3 spawnPos, float targetYPos)
+    {
+        this.spawnPos = spawnPos;
+        this.targetYPos = targetYPos;
+    }
+    public Vector3 spawnPos;
+    public float targetYPos;
+}
