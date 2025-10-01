@@ -50,7 +50,6 @@ public class LevelSelectionManager : MonoBehaviour
             .ToArray();
     }
 
-    // --- Step 3: Create a button for each level ---
     private void CreateLevelButtons()
     {
         if (allLevels == null || allLevels.Length == 0)
@@ -59,6 +58,7 @@ public class LevelSelectionManager : MonoBehaviour
             return;
         }
 
+        int levelIdx = 0;
         foreach (LevelSO level in allLevels)
         {
             GameObject buttonGO = Instantiate(levelButtonPrefab, buttonParent);
@@ -68,18 +68,15 @@ public class LevelSelectionManager : MonoBehaviour
             if (buttonText != null)
                 buttonText.text = level.name;
 
-            button.onClick.AddListener(() => OnLevelButtonClicked(level));
+            button.onClick.AddListener(() => OnLevelButtonClicked(level, levelIdx));
+            levelIdx++;
         }
     }
 
-    // --- Step 4: Handle the button click ---
-    private void OnLevelButtonClicked(LevelSO selectedLevel)
+    private void OnLevelButtonClicked(LevelSO selectedLevel, int levelIdx)
     {
-        // Store the selected level information somewhere accessible by the next scene
-        // A simple way is a static field in a persistent manager or a temporary object.
         LevelLoader.currentLevel = selectedLevel;
-
-        // Load the main level scene
+        ScreenManager.levelIdx = levelIdx;
         SceneManager.LoadScene(levelSceneName);
     }
 }

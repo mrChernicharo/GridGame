@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 public class ScreenManager : MonoBehaviour
 {
     static ScreenManager instance;
-    string currentScene;
+    string currentScene = "";
+    public static int levelIdx = 0;
 
     void Awake()
     {
@@ -36,68 +37,38 @@ public class ScreenManager : MonoBehaviour
         currentScene = SceneManager.GetActiveScene().name;
         // Debug.Log($"OnSceneLoaded ::: {currentScene}");
 
-        switch (currentScene)
+        GameObject startButtonGO = GameObject.FindGameObjectWithTag("Button.Start");
+        GameObject backButtonGO = GameObject.FindGameObjectWithTag("Button.Back");
+        GameObject oldLevelButtonGO = GameObject.FindGameObjectWithTag("Button.Level");
+        GameObject level01ButtonGO = GameObject.FindGameObjectWithTag("Button.Level.01");
+
+
+
+        if (startButtonGO != null)
         {
-            case "MainScreen":
-                GameObject startButtonGO = GameObject.FindGameObjectWithTag("Button.Start");
-                Button startButton = startButtonGO.GetComponent<Button>();
-                startButton.onClick.AddListener(OnStartButtonClick);
-                break;
-            case "LevelSelectionScreen":
-                GameObject backButtonGO = GameObject.FindGameObjectWithTag("Button.Back");
-                GameObject levelButtonGO = GameObject.FindGameObjectWithTag("Button.Level");
-                GameObject level01ButtonGO = GameObject.FindGameObjectWithTag("Button.Level.01");
-                Button backButton = backButtonGO.GetComponent<Button>();
-                Button levelButton = levelButtonGO.GetComponent<Button>();
-                Button level01Button = level01ButtonGO.GetComponent<Button>();
-
-                backButton.onClick.AddListener(OnBackButtonClick);
-                levelButton.onClick.AddListener(OnLevelButtonClick);
-                level01Button.onClick.AddListener(OnLevel01ButtonClick);
-                break;
-            default:
-                GameObject backButtonGOD = GameObject.FindGameObjectWithTag("Button.Back");
-                Button backButtonD = backButtonGOD.GetComponent<Button>();
-                backButtonD.onClick.AddListener(OnBackButtonClick);
-                break;
+            Button startButton = startButtonGO.GetComponent<Button>();
+            startButton.onClick.AddListener(() => SceneManager.LoadScene("LevelSelectionScreen"));
         }
-
-
-    }
-
-
-    private void OnBackButtonClick()
-    {
-        // Debug.Log("OnBackButtonClick::");
-        if (SceneManager.GetActiveScene().name == "LevelSelectionScreen")
+        if (level01ButtonGO != null)
         {
-            instance.LoadScreen("MainScreen");
+            Button level01Button = level01ButtonGO.GetComponent<Button>();
+            level01Button.onClick.AddListener(() => SceneManager.LoadScene("Level"));
         }
-        else
+        if (oldLevelButtonGO != null)
         {
-            instance.LoadScreen("LevelSelectionScreen");
+            Button oldLevelButton = oldLevelButtonGO.GetComponent<Button>();
+            oldLevelButton.onClick.AddListener(() => SceneManager.LoadScene("LevelScreen"));
         }
-    }
-
-    private void OnLevelButtonClick()
-    {
-        // Debug.Log("OnSLevelButtonClick::");
-        instance.LoadScreen("LevelScreen");
-    }
-    private void OnLevel01ButtonClick()
-    {
-        instance.LoadScreen("Level");
-    }
-    private void OnStartButtonClick()
-    {
-        // Debug.Log("OnStartButtonClick::");
-        instance.LoadScreen("LevelSelectionScreen");
-    }
-
-
-
-    public void LoadScreen(string screenName)
-    {
-        SceneManager.LoadScene(screenName);
+        if (backButtonGO != null)
+        {
+            Button backButton = backButtonGO.GetComponent<Button>();
+            backButton.onClick.AddListener(() =>
+            {
+                if (SceneManager.GetActiveScene().name == "LevelSelectionScreen")
+                    SceneManager.LoadScene("MainScreen");
+                else
+                    SceneManager.LoadScene("LevelSelectionScreen");
+            });
+        }
     }
 }

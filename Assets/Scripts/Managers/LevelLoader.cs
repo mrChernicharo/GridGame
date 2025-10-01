@@ -11,10 +11,7 @@ public class LevelLoader : MonoBehaviour
     void Awake()
     {
 
-        int playerLevel = GameData.LoadPlayerLevel();
-        int lvlIdx = playerLevel % levelList.levels.Length;
-
-        currentLevel = levelList.levels[lvlIdx];
+        currentLevel = levelList.levels[ScreenManager.levelIdx];
         if (currentLevel == null)
         {
             Debug.LogError("No Level Scriptable Object assigned to LevelLoader!");
