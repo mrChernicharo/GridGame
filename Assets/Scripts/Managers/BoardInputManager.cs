@@ -61,7 +61,7 @@ public class BoardInputManager : MonoBehaviour
 
                 break;
             case TouchPhase.Moved:
-                if (board.isLocked || currentCollider == null || !isDragging) return;
+                if (board.IsLocked() || currentCollider == null || !isDragging) return;
 
                 draggingGem = currentCollider.GetComponent<Gem2>();
                 Tile tile = board.GetTileFromPosition(draggingGem.transform.position);
@@ -71,7 +71,7 @@ public class BoardInputManager : MonoBehaviour
 
 
                 if (Vector2.Distance(startPos, touchPos) <= dragTriggerDistance) return;
-                board.isLocked = true;
+                board.Lock();
                 isDragging = false;
                 currentCollider = null;
                 offset = Vector3.zero;
@@ -89,11 +89,6 @@ public class BoardInputManager : MonoBehaviour
                 else if (tile.col > 0 && angleDeg >= 135 || angleDeg < -135)
                     dir = Direction.Left;
 
-                if (dir == null)
-                {
-                    board.isLocked = false;
-                    return;
-                }
                 // Debug.Log($"angle {angleDeg} -> Direction {dir}");
                 GameObject otherGemObj = dir switch
                 {

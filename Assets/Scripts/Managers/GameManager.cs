@@ -17,34 +17,12 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager ::: playerLevel: {playerLevel}");
 
         await board.InitializeBoard();
+        await gemSpawner.InitializeGems();
 
-        StartCoroutine(RunGameStartSequence());
+        // StartCoroutine(RunGameStartSequence());
     }
 
-    IEnumerator RunGameStartSequence()
-    {
-        if (board.tiles == null)
-        {
-            Debug.Log($"GameManager ::: RunGameStartSequence ERROR, no board.tiles");
-        }
-        else
-        {
-            foreach (Tile tile in board.tiles)
-            {
-                yield return new WaitForSeconds(0.01f);
-                // Debug.Log($"GameManager ::: RunGameStartSequence: {tile.row} {tile.col}");
 
-                GameObject spawnPoint = board.spawnPoints[tile.col];
-                GemColor color = Helpers.GetRandomGemColor();
-
-                // Debug.Log($"color {color} spawnPoints.Length: {board.spawnPoints.Length} spawnPoint: {spawnPoint?.transform?.position}");
-
-                Vector3 spawnPos = spawnPoint.transform.position;
-                gemSpawner.SpawnGem(color, spawnPos, tile.GetPosition().y);
-            }
-
-        }
-    }
 
 
     void OnDestroy()
@@ -73,4 +51,6 @@ public class GameManager : MonoBehaviour
     //         gemSpawner.SpawnGem(color, pos);
     //     }
     // }
+
+
 }

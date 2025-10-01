@@ -9,7 +9,7 @@ public class Board2 : MonoBehaviour
     public int rows;
     public int cols;
     public static float tileSize = 0.42f;
-    public bool isLocked = false;
+    private bool isLocked = false;
 
     [HideInInspector] public Tile[,] tiles;
     [HideInInspector] public GameObject[,] gems;
@@ -34,6 +34,19 @@ public class Board2 : MonoBehaviour
         gems[tile.row, tile.col] = gem;
 
         // Debug.Log($"*** Board received 'GemPlaced' event! *** color: {ev.color} position: {ev.position}, tile: {tile.row} {tile.col}, gemObj ::: {gem.name}");
+    }
+
+    public void Lock()
+    {
+        isLocked = true;
+    }
+    public void UnLock()
+    {
+        isLocked = false;
+    }
+    public bool IsLocked()
+    {
+        return isLocked;
     }
 
     public async Task InitializeBoard()

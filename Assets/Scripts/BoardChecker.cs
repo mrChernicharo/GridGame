@@ -48,7 +48,7 @@ public class BoardChecker : MonoBehaviour
             await WrangleGems(br);
         }
 
-        board.isLocked = false;
+        board.UnLock();
     }
 
     private BoardResult2 CheckBoard()
