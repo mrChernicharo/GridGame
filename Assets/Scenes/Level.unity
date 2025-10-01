@@ -663,6 +663,7 @@ MonoBehaviour:
   - {fileID: 8548798547539905702, guid: a7c05e18e81d34ca68c56d0c674184cc, type: 3}
   - {fileID: 400291987919602003, guid: bb3f6eba399824d14ab975cd2e95e0f8, type: 3}
   board: {fileID: 465525676}
+  spawnInterval: 20
 --- !u!4 &437758028
 Transform:
   m_ObjectHideFlags: 0
@@ -676,7 +677,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1371584034}
+  m_Father: {fileID: 1427950087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &465525675
 GameObject:
@@ -689,7 +690,7 @@ GameObject:
   - component: {fileID: 465525677}
   - component: {fileID: 465525676}
   m_Layer: 0
-  m_Name: Board2
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -709,7 +710,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 0
   cols: 0
-  isLocked: 0
   spawnPoints: []
   tilePrefab: {fileID: 4393888916411130420, guid: 10d4f16ff422142d2b0f2e0dc0332c32, type: 3}
 --- !u!4 &465525677
@@ -975,7 +975,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 437758028}
   - {fileID: 850163664}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1012,6 +1011,7 @@ Transform:
   - {fileID: 325740542}
   - {fileID: 283027580}
   - {fileID: 1942717121}
+  - {fileID: 437758028}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1704867887

@@ -123,10 +123,10 @@ public class Board : MonoBehaviour
 
     public GemColor GetRandomGemColor()
     {
-        var colors = Enum.GetValues(typeof(GemColor));
-        int idx = UnityEngine.Random.Range(0, colors.Length);
+        LevelSO levelSO = LevelLoader.currentLevel;
+        int idx = UnityEngine.Random.Range(0, levelSO.gemColors.Length);
 
-        return (GemColor)colors.GetValue(idx);
+        return (GemColor)levelSO.gemColors.GetValue(idx);
     }
 
     public void LogGrid()

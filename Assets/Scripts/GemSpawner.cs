@@ -14,7 +14,7 @@ public class GemSpawner : MonoBehaviour
     [SerializeField] private Board board;
 
     [Tooltip("in milliseconds")]
-    [SerializeField] private int spawnInterval = 30;
+    [SerializeField] private int spawnInterval = 40;
 
     void OnEnable()
     {
@@ -77,10 +77,10 @@ public class GemSpawner : MonoBehaviour
             {
                 await Task.Delay(spawnInterval);
 
-                GemColor color = Helpers.GetRandomGemColor();
+                GemColor color = board.GetRandomGemColor();
                 if (!CanSpawnGem(color, tile))
                 {
-                    color = Helpers.GetRandomGemColor();
+                    color = board.GetRandomGemColor();
                 }
 
                 GameObject spawnPoint = board.spawnPoints[tile.col];

@@ -226,7 +226,7 @@ public class BoardChecker : MonoBehaviour
             await Task.Delay(30);
             gem.Explode();
         }
-        await Task.Delay(200);
+        // await Task.Delay(200);
 
 
         foreach (FallingGem fg in falling)
@@ -242,7 +242,8 @@ public class BoardChecker : MonoBehaviour
             GemColor color = board.GetRandomGemColor();
             SpawnGem.Invoke(this, new SpawnGemEventArgs(color, sg.spawnPos, sg.targetYPos));
         }
-        await Task.Delay(800);
+
+        await Task.Delay(600);
 
         BoardResult2 br2 = CheckBoard();
         if (br2.gemsToRemove.Count > 0)

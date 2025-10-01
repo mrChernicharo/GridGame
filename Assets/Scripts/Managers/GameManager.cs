@@ -20,9 +20,6 @@ public class GameManager : MonoBehaviour
         await gemSpawner.InitializeGems();
     }
 
-
-
-
     void OnDestroy()
     {
         Debug.Log($"RESET PLAYER LEVEL");

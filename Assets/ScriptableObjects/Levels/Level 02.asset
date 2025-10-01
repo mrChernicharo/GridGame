@@ -15,3 +15,4 @@ MonoBehaviour:
   name: Level 02
   rows: 7
   columns: 6
+  gemColors: 000000000100000002000000070000000400000006000000

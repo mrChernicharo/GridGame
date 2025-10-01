@@ -102,12 +102,15 @@ public class Gem2 : MonoBehaviour
         destination = _destination;
     }
 
-    public void Explode()
+    public async Task Explode()
     {
-        GameObject explosion = Instantiate(gemDetails.explosionEffect, transform.position, Quaternion.identity);
+        GameObject explosion = Instantiate(gemDetails.explosionEffect, transform.position, Quaternion.identity, transform.parent);
         explosion.GetComponent<ParticleSystem>().Play();
 
         Destroy(gameObject);
+
+        await Task.Delay(2000);
+        Destroy(explosion);
     }
 
     public void Fall(int fallCount)
