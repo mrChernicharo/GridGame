@@ -12,11 +12,11 @@ public enum GemColorOld
 
 struct BoardResult
 {
-    public List<List<Gem>> rowGems;
-    public List<List<Gem>> colGems;
-    public List<Gem> gemsToRemove;
+    public List<List<Gem_OLD>> rowGems;
+    public List<List<Gem_OLD>> colGems;
+    public List<Gem_OLD> gemsToRemove;
 
-    public BoardResult(List<List<Gem>> rg, List<List<Gem>> cg, List<Gem> gtr)
+    public BoardResult(List<List<Gem_OLD>> rg, List<List<Gem_OLD>> cg, List<Gem_OLD> gtr)
     {
         rowGems = rg;
         colGems = cg;
@@ -36,7 +36,7 @@ struct GemColorAndPrefab
     }
 }
 
-public class Board : MonoBehaviour
+public class Board_OLD : MonoBehaviour
 {
     static public float CELL_GAP = 0.55f;
     [SerializeField] private float LEFT_MARGIN; // -1.885
@@ -122,7 +122,7 @@ public class Board : MonoBehaviour
     {
         GameObject spawnPoint = spawnPoints[col_];
         GameObject gemGO = Instantiate(prefab, spawnPoint.transform.position, Quaternion.Euler(-90, 0, 0));
-        Gem gem = gemGO.GetComponent<Gem>();
+        Gem_OLD gem = gemGO.GetComponent<Gem_OLD>();
 
         gem.row = row_;
         gem.col = col_;
@@ -152,7 +152,7 @@ public class Board : MonoBehaviour
                 Collider collider = hit.transform.GetComponent<Collider>();
                 if (collider == null) return;
 
-                Gem clickedGem = collider.GetComponent<Gem>();
+                Gem_OLD clickedGem = collider.GetComponent<Gem_OLD>();
                 if (clickedGem.IsMoving()) return;
 
                 currentCollider = collider;
@@ -167,7 +167,7 @@ public class Board : MonoBehaviour
             case TouchPhase.Moved:
                 if (!isDragging || isLocked || currentCollider == null) return;
 
-                Gem gem = currentCollider.GetComponent<Gem>();
+                Gem_OLD gem = currentCollider.GetComponent<Gem_OLD>();
 
                 Vector3 startPos = gem.transform.position + offset;
                 Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
@@ -255,8 +255,8 @@ public class Board : MonoBehaviour
     void GemSwap(GameObject gem, int gemIdx, GameObject other, int otherIdx, Direction direction)
     {
         // Debug.Log($"::: GemSwap ::: Gem: {gem.GetComponent<Gem>().color} Other: {other.GetComponent<Gem>().color} Direction: {direction}");
-        Gem thisGem = gem.GetComponent<Gem>();
-        Gem otherGem = other.GetComponent<Gem>();
+        Gem_OLD thisGem = gem.GetComponent<Gem_OLD>();
+        Gem_OLD otherGem = other.GetComponent<Gem_OLD>();
 
         thisGem.Move(other.transform.position);
         otherGem.Move(gem.transform.position);
@@ -270,7 +270,7 @@ public class Board : MonoBehaviour
         gems[gemIdx] = other;
         gems[otherIdx] = gem;
 
-        gems = gems.OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().col).ToList();
+        gems = gems.OrderBy(g => g.GetComponent<Gem_OLD>().row).ThenBy(g => g.GetComponent<Gem_OLD>().col).ToList();
 
     }
 
@@ -278,14 +278,14 @@ public class Board : MonoBehaviour
     {
         // Debug.Log("CheckBoard");
 
-        List<List<Gem>> rowGems = new List<List<Gem>>();
-        List<List<Gem>> colGems = new List<List<Gem>>();
+        List<List<Gem_OLD>> rowGems = new List<List<Gem_OLD>>();
+        List<List<Gem_OLD>> colGems = new List<List<Gem_OLD>>();
 
 
         // initialize rowGems / colGems
-        for (int i = 0; i < rows; i++) rowGems.Add(new List<Gem>());
+        for (int i = 0; i < rows; i++) rowGems.Add(new List<Gem_OLD>());
 
-        for (int i = 0; i < columns; i++) colGems.Add(new List<Gem>());
+        for (int i = 0; i < columns; i++) colGems.Add(new List<Gem_OLD>());
 
 
         // assign gems to rowGems / colGems
@@ -293,7 +293,7 @@ public class Board : MonoBehaviour
         int tempCol = 0;
         for (int i = 0; i < gems.Count; i++)
         {
-            Gem currGem = gems[i].GetComponent<Gem>();
+            Gem_OLD currGem = gems[i].GetComponent<Gem_OLD>();
 
             rowGems[tempRow].Add(currGem);
             colGems[tempCol].Add(currGem);
@@ -312,16 +312,16 @@ public class Board : MonoBehaviour
         }
 
 
-        List<Gem> gemsToRemove = new List<Gem>();
-        List<Gem> currSequence = new List<Gem>();
+        List<Gem_OLD> gemsToRemove = new List<Gem_OLD>();
+        List<Gem_OLD> currSequence = new List<Gem_OLD>();
 
         for (int i = 0; i < rowGems.Count; i++)
         {
-            List<Gem> currRow = rowGems[i];
+            List<Gem_OLD> currRow = rowGems[i];
 
             for (int j = 0; j < currRow.Count; j++)
             {
-                Gem item = currRow[j];
+                Gem_OLD item = currRow[j];
                 bool isFirstItem = j == 0;
                 bool isLastItem = j == currRow.Count - 1;
                 if (isFirstItem)
@@ -330,7 +330,7 @@ public class Board : MonoBehaviour
                 }
                 else
                 {
-                    Gem prev = currRow[j - 1];
+                    Gem_OLD prev = currRow[j - 1];
 
                     if (prev.color == item.color)
                     {
@@ -342,7 +342,7 @@ public class Board : MonoBehaviour
                         if (currSequence.Count >= 3)
                         {
                             // Debug.Log("COMBO! COMBO!");
-                            foreach (Gem obj in currSequence) gemsToRemove.Add(obj);
+                            foreach (Gem_OLD obj in currSequence) gemsToRemove.Add(obj);
                         }
 
                         currSequence.Clear();
@@ -354,11 +354,11 @@ public class Board : MonoBehaviour
 
         for (int i = 0; i < colGems.Count; i++)
         {
-            List<Gem> currCol = colGems[i];
+            List<Gem_OLD> currCol = colGems[i];
 
             for (int j = 0; j < currCol.Count; j++)
             {
-                Gem item = currCol[j];
+                Gem_OLD item = currCol[j];
                 bool isFirstItem = j == 0;
                 bool isLastItem = j == currCol.Count - 1;
                 if (isFirstItem)
@@ -367,7 +367,7 @@ public class Board : MonoBehaviour
                 }
                 else
                 {
-                    Gem prev = currCol[j - 1];
+                    Gem_OLD prev = currCol[j - 1];
 
                     if (prev.color == item.color)
                     {
@@ -379,7 +379,7 @@ public class Board : MonoBehaviour
                         if (currSequence.Count >= 3)
                         {
                             // Debug.Log("COMBO! COMBO!");
-                            foreach (Gem obj in currSequence) gemsToRemove.Add(obj);
+                            foreach (Gem_OLD obj in currSequence) gemsToRemove.Add(obj);
                         }
 
                         currSequence.Clear();
@@ -405,7 +405,7 @@ public class Board : MonoBehaviour
             for (int i = 0; i < br.colGems.Count; i++)
             {
                 int colDestroyCount = 0;
-                List<Gem> gemsInCol = br.colGems[i];
+                List<Gem_OLD> gemsInCol = br.colGems[i];
 
                 yield return new WaitForSeconds(0.01f);
 
@@ -415,11 +415,11 @@ public class Board : MonoBehaviour
 
                     yield return new WaitForSeconds(0.01f);
 
-                    Gem currGem = gemsInCol[j];
+                    Gem_OLD currGem = gemsInCol[j];
                     int gIdx = currGem.row * columns + currGem.col;
                     GameObject gGO = gems[gIdx];
 
-                    if (gGO.GetComponent<Gem>() != currGem) Debug.LogError("Houston!");
+                    if (gGO.GetComponent<Gem_OLD>() != currGem) Debug.LogError("Houston!");
 
 
                     if (br.gemsToRemove.Contains(currGem))
@@ -461,7 +461,7 @@ public class Board : MonoBehaviour
 
 
             // update gems' rows & cols
-            gems = gems.Where(g => g != null).OrderBy(g => g.GetComponent<Gem>().row).ThenBy(g => g.GetComponent<Gem>().col).ToList();
+            gems = gems.Where(g => g != null).OrderBy(g => g.GetComponent<Gem_OLD>().row).ThenBy(g => g.GetComponent<Gem_OLD>().col).ToList();
             // gems.ForEach(g => g.GetComponent<Gem>().PrintInfo());
 
             yield return new WaitForSeconds(0.1f);
@@ -487,16 +487,16 @@ public class Board : MonoBehaviour
 
         if (_col >= 2)
         {
-            Gem leftNeighbor = gems[_row * columns + (_col - 1)].GetComponent<Gem>();
-            Gem leftNeighbor2 = gems[_row * columns + (_col - 2)].GetComponent<Gem>();
+            Gem_OLD leftNeighbor = gems[_row * columns + (_col - 1)].GetComponent<Gem_OLD>();
+            Gem_OLD leftNeighbor2 = gems[_row * columns + (_col - 2)].GetComponent<Gem_OLD>();
 
             if (leftNeighbor.color == color && leftNeighbor2.color == color)
                 return false;
         }
         if (_row >= 2)
         {
-            Gem bottomNeighbor = gems[(_row - 1) * columns + _col].GetComponent<Gem>();
-            Gem bottomNeighbor2 = gems[(_row - 2) * columns + _col].GetComponent<Gem>();
+            Gem_OLD bottomNeighbor = gems[(_row - 1) * columns + _col].GetComponent<Gem_OLD>();
+            Gem_OLD bottomNeighbor2 = gems[(_row - 2) * columns + _col].GetComponent<Gem_OLD>();
 
             if (bottomNeighbor.color == color && bottomNeighbor2.color == color)
                 return false;

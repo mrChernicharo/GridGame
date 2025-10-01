@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System;
 using System.Text;
 
-public class Board2 : MonoBehaviour
+public class Board : MonoBehaviour
 {
     public int rows;
     public int cols;

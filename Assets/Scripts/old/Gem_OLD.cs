@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using TMPro;
-public class Gem : MonoBehaviour
+public class Gem_OLD : MonoBehaviour
 {
     private bool isInitializing = true;
     private bool isFalling = true;
@@ -136,7 +136,7 @@ public class Gem : MonoBehaviour
     public void Fall(int fallCount)
     {
         int newRow = row - fallCount;
-        float newYposition = -3.5f + Board.CELL_GAP * newRow;
+        float newYposition = -3.5f + Board_OLD.CELL_GAP * newRow;
 
 
         // Debug.Log($"Fall!!! {color} col {col} ::: fallCount {fallCount} ::: oldRow {row} newRow {newRow} ::: oldYPosition {yPosition} newYPosition {newYposition}");

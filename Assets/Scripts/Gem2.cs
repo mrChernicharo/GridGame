@@ -113,7 +113,7 @@ public class Gem2 : MonoBehaviour
     public void Fall(int fallCount)
     {
         float currYPos = gameObject.transform.position.y;
-        float newYTarget = currYPos - fallCount * Board2.tileSize;
+        float newYTarget = currYPos - fallCount * Board.tileSize;
 
         // Debug.Log($"curr yTarget {yTarget} curr yPos {currYPos} newYTarget {newYTarget}");
         SetYTarget(newYTarget);

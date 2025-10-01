@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class BoardChecker : MonoBehaviour
 {
-    [SerializeField] private Board2 board;
+    [SerializeField] private Board board;
     [SerializeField] private float timeToCheck = 0.5f;
 
 

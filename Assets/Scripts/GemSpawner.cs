@@ -11,7 +11,10 @@ public class GemSpawner : MonoBehaviour
 {
     private Dictionary<GemColor, GameObject> gemDict;
     [SerializeField] private GameObject[] gems;
-    [SerializeField] private Board2 board;
+    [SerializeField] private Board board;
+
+    [Tooltip("in milliseconds")]
+    [SerializeField] private int spawnInterval = 30;
 
     void OnEnable()
     {
@@ -72,7 +75,7 @@ public class GemSpawner : MonoBehaviour
         {
             foreach (Tile tile in board.tiles)
             {
-                await Task.Delay(20);
+                await Task.Delay(spawnInterval);
 
                 GemColor color = Helpers.GetRandomGemColor();
                 if (!CanSpawnGem(color, tile))

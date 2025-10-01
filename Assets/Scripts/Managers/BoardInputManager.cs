@@ -19,7 +19,7 @@ public class BoardInputManager : MonoBehaviour
 
 
 
-    [SerializeField] Board2 board;
+    [SerializeField] Board board;
 
     void OnEnable()
     {
