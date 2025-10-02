@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections;
 using System.Threading.Tasks;
-using System;
 using System.Text;
 
 public class Board : MonoBehaviour
@@ -10,6 +8,8 @@ public class Board : MonoBehaviour
     public int cols;
     public static float tileSize = 0.42f;
     private bool isLocked = false;
+
+    private GemColor[] gemColors;
 
     [HideInInspector] public Tile[,] tiles;
     [HideInInspector] public GameObject[,] gems;
@@ -32,8 +32,6 @@ public class Board : MonoBehaviour
 
         GameObject gem = sender as GameObject;
         gems[tile.row, tile.col] = gem;
-
-        // Debug.Log($"*** Board received 'GemPlaced' event! *** color: {ev.color} position: {ev.position}, tile: {tile.row} {tile.col}, gemObj ::: {gem.name}");
     }
 
     public void Lock()
@@ -49,21 +47,14 @@ public class Board : MonoBehaviour
         return isLocked;
     }
 
-    public async Task InitializeBoard()
+    public async Task InitializeBoard(int _rows, int _cols, GemColor[] _colors)
     {
         Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10f));
         Vector3 topRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 10f));
         // Debug.Log($"bottomLeft {bottomLeft} topRight {topRight} ::: cameraPos {Camera.main.transform.position}");
-
-        LevelSO levelSO = LevelLoader.currentLevel;
-        if (levelSO == null)
-        {
-            Debug.LogError("Board2 ::: failed to reference LevelSO out of LevelLoader.levelToLoad");
-            return;
-        }
-
-        rows = levelSO.rows;
-        cols = levelSO.columns;
+        rows = _rows;
+        cols = _cols;
+        gemColors = _colors;
 
         tiles = new Tile[rows, cols];
         gems = new GameObject[rows, cols];
@@ -123,10 +114,8 @@ public class Board : MonoBehaviour
 
     public GemColor GetRandomGemColor()
     {
-        LevelSO levelSO = LevelLoader.currentLevel;
-        int idx = UnityEngine.Random.Range(0, levelSO.gemColors.Length);
-
-        return (GemColor)levelSO.gemColors.GetValue(idx);
+        int idx = UnityEngine.Random.Range(0, gemColors.Length);
+        return (GemColor)gemColors.GetValue(idx);
     }
 
     public void LogGrid()

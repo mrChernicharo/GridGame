@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Collections;
 using UnityEngine;
 using System.Threading.Tasks;
 
@@ -195,8 +194,6 @@ public class BoardChecker : MonoBehaviour
                 {
                     br.gemsToRemove.Remove(currGem);
                     colDestroyCount++;
-                    // await Task.Delay(20);
-                    // currGem.Explode();
                     removing.Add(currGem);
                 }
                 else
@@ -224,7 +221,7 @@ public class BoardChecker : MonoBehaviour
         foreach (Gem2 gem in removing)
         {
             await Task.Delay(30);
-            gem.Explode();
+            _ = gem.Explode();
         }
         // await Task.Delay(200);
 

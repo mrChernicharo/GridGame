@@ -13,11 +13,11 @@ public class Score : MonoBehaviour
         score += _score;
         scoreText.text = $"{score}";
 
-        if (score > 1000 && !scoreGoalReached)
-        {
-            scoreGoalReached = true;
-            int currLevel = GameData.LoadPlayerLevel();
-            GameData.SavePlayerLevel(currLevel + 1);
-        }
+        // if (score > 1000 && !scoreGoalReached)
+        // {
+        //     scoreGoalReached = true;
+        //     int currLevel = GameData.LoadPlayerLevel();
+        //     GameData.SavePlayerLevel(currLevel + 1);
+        // }
     }
 }

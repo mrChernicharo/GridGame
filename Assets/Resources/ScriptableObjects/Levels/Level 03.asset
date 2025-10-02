@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Level 03
   m_EditorClassIdentifier: 
   name: Level 03
-  rows: 8
-  columns: 6
-  gemColors: 000000000700000006000000020000000400000003000000
+  rows: 9
+  columns: 8
+  gemColors: 0000000007000000060000000200000004000000

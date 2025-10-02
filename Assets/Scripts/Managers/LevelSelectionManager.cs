@@ -1,39 +1,18 @@
-// using UnityEngine;
-
-// public class LevelButtons : MonoBehaviour
-// {
-//     [SerializeField] LevelListSO levelListSO;
-
-//     void OnEnable()
-//     {
-//         Debug.Log($"currentLevel: {LevelLoader.currentLevel} levelListSO: {levelListSO.levels.Length} levels");
-
-//     }
-
-
-
-
-// }
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using TMPro;
+using System.Threading.Tasks;
 
 public class LevelSelectionManager : MonoBehaviour
 {
-    // The LevelSO type, replace with your actual class name if different
-    // [System.Serializable] // Only needed if you want it to appear in the inspector as a field
-    // public class LevelSO : ScriptableObject { ... } 
-
     [Header("UI References")]
     public Transform buttonParent; // Parent object for the level buttons (e.g., a ScrollView Content)
-    public GameObject levelButtonPrefab; // Prefab of your button UI element
+    public GameObject levelButtonPrefab;
 
     [Header("Scene Management")]
-    public string levelSceneName = "Level"; // Name of the scene to load the level in
-
+    public string levelSceneName = "Level";
     private LevelSO[] allLevels;
 
     void Start()
@@ -58,25 +37,28 @@ public class LevelSelectionManager : MonoBehaviour
             return;
         }
 
-        int levelIdx = 0;
-        foreach (LevelSO level in allLevels)
+        for (int idx = 0; idx < allLevels.Length; idx++)
         {
+            int levelIdx = idx;
+
             GameObject buttonGO = Instantiate(levelButtonPrefab, buttonParent);
             Button button = buttonGO.GetComponent<Button>();
-
             TextMeshProUGUI buttonText = buttonGO.GetComponentInChildren<TextMeshProUGUI>();
-            if (buttonText != null)
-                buttonText.text = level.name;
 
-            button.onClick.AddListener(() => OnLevelButtonClicked(level, levelIdx));
-            levelIdx++;
+            if (buttonText != null)
+                buttonText.text = $"Level {levelIdx + 1}";
+
+            button.onClick.AddListener(() => OnLevelButtonClicked(levelIdx));
         }
     }
 
-    private void OnLevelButtonClicked(LevelSO selectedLevel, int levelIdx)
+    private async void OnLevelButtonClicked(int levelIdx)
     {
-        LevelLoader.currentLevel = selectedLevel;
-        ScreenManager.levelIdx = levelIdx;
+        Debug.Log($"currentLevelIdx {levelIdx}");
+        PlayerPrefs.SetInt("currentLevelIdx", levelIdx);
+
+        await Task.Delay(100);
+
         SceneManager.LoadScene(levelSceneName);
     }
 }

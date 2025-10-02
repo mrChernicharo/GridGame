@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class ScreenManager : MonoBehaviour
 {
-    static ScreenManager instance;
-    string currentScene = "";
-    public static int levelIdx = 0;
+    public static ScreenManager instance;
+    private string currentScene = "";
+    // public static int levelIdx = 0;
 
     void Awake()
     {
@@ -40,7 +40,6 @@ public class ScreenManager : MonoBehaviour
         GameObject startButtonGO = GameObject.FindGameObjectWithTag("Button.Start");
         GameObject backButtonGO = GameObject.FindGameObjectWithTag("Button.Back");
         GameObject oldLevelButtonGO = GameObject.FindGameObjectWithTag("Button.Level");
-        GameObject level01ButtonGO = GameObject.FindGameObjectWithTag("Button.Level.01");
 
 
 
@@ -48,11 +47,6 @@ public class ScreenManager : MonoBehaviour
         {
             Button startButton = startButtonGO.GetComponent<Button>();
             startButton.onClick.AddListener(() => SceneManager.LoadScene("LevelSelectionScreen"));
-        }
-        if (level01ButtonGO != null)
-        {
-            Button level01Button = level01ButtonGO.GetComponent<Button>();
-            level01Button.onClick.AddListener(() => SceneManager.LoadScene("Level"));
         }
         if (oldLevelButtonGO != null)
         {

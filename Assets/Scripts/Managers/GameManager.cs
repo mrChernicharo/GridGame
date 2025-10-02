@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -8,21 +5,35 @@ public class GameManager : MonoBehaviour
 {
     public GemSpawner gemSpawner;
     [SerializeField] private Board board;
-    private int playerLevel;
+    [SerializeField] private LevelListSO levelList;
+    [HideInInspector] public LevelSO currentLevel;
 
+    void Awake()
+    {
+        int levelIdx = PlayerPrefs.GetInt("currentLevelIdx", -1);
+        if (levelIdx == -1)
+        {
+            Debug.LogError("Error loading currentLevel");
+            return;
+        }
+
+        currentLevel = levelList.levels[levelIdx];
+    }
 
     async void Start()
     {
-        playerLevel = GameData.LoadPlayerLevel();
-        Debug.Log($"GameManager ::: playerLevel: {playerLevel}");
+        if (currentLevel == null)
+        {
+            Debug.LogError("Error loading currentLevel");
+            return;
+        }
 
-        await board.InitializeBoard();
+        await board.InitializeBoard(currentLevel.rows, currentLevel.columns, currentLevel.gemColors);
         await gemSpawner.InitializeGems();
     }
 
     void OnDestroy()
     {
-        Debug.Log($"RESET PLAYER LEVEL");
-        GameData._ResetPlayerLevel();
+        PlayerPrefs.SetInt("currentLevelIdx", -1);
     }
 }

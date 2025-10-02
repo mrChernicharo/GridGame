@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ee86901fd57048499f1867d38ba289d, type: 3}
   m_Name: Level 01
   m_EditorClassIdentifier: 
-  name: Level 01
-  rows: 12
-  columns: 10
-  gemColors: 000000000100000002000000040000000500000007000000
+  name: Level 02
+  rows: 7
+  columns: 7
+  gemColors: 00000000010000000200000007000000

@@ -69,7 +69,6 @@ public class Board_OLD : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"playerLevel {GameData.LoadPlayerLevel()}");
         CreateBoard();
         StartCoroutine(InitializeGems());
     }
